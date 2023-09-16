@@ -1,0 +1,7 @@
+# ninja log v5
+20	1969	7164810853265831	CMakeFiles/A2_JashNguyen.dir/Company.cpp.obj	2b70a6781a30469e
+6	3169	7165325263353663	CMakeFiles/A2_JashNguyen.dir/main.cpp.obj	408ab0d4a4ec9fc6
+24	3847	7165278910165128	CMakeFiles/A2_JashNguyen.dir/Player.cpp.obj	3ee547b784c4e749
+3171	3628	7165325267917336	A2_JashNguyen.exe	20f8aee383c73fd5
+21	1073	7159228725251531	CMakeFiles/A2_JashNguyen.dir/Risk.cpp.obj	e86457d58794b498
+4	495	7165328294482087	build.ninja	92ac290d599e010d
