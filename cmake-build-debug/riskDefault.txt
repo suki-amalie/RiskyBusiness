@@ -1,0 +1,6 @@
+Company Share Bonus: ;shares;5;10
+Market Crash: Lose Shares ;shares;5;-10
+Tax Return: Collect $;money;0;50
+Attend a Conference: Pay $;money;0;-25
+Admirer Leaves a Gift: Collect $;money;5;10
+Market Boom: Bonus Shares ;shares;10;20
