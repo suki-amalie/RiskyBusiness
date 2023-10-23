@@ -1,6 +1,8 @@
-//
-// Created by ADMIN on 08-Sep-23.
-//
+/**************************************************
+ Project: Risky Business - Assigment 2 part B
+ Author: Jash Nguyen
+ Purpose: BASE COMPANY CLASS Header file
+**************************************************/
 
 #ifndef A2_JASHNGUYEN_COMPANY_H
 #define A2_JASHNGUYEN_COMPANY_H
@@ -19,9 +21,12 @@ protected:
     int companyCost;
     string owner = "-------"; //initialize to be empty
 public:
+    // constructors
     Company();
     Company(string name);
     virtual ~Company() = default;
+
+    // accessor functions
     int getTotalShares();
     int getSharePrice();
     int getCompanyCost();
@@ -31,6 +36,8 @@ public:
     string getOwnerName();
     virtual string getDetails()  {return "print base class\n"; };
     char getKey();
+
+    // mutators
     void setTotalShares(int playersNumber);
     void setCompanyCost(int level);
     void setSharePrice(int level);

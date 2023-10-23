@@ -1,6 +1,8 @@
-//
-// Created by ADMIN on 08-Sep-23.
-//
+/**************************************************
+ Project: Risky Business - Assigment 2 part B
+ Author: Jash Nguyen
+ Purpose: PLAYER CLASS Header file
+**************************************************/
 
 #ifndef A2_JASHNGUYEN_PLAYER_H
 #define A2_JASHNGUYEN_PLAYER_H

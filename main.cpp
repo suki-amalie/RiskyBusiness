@@ -1,7 +1,11 @@
+/**************************************************
+ Project: Risky Business - Assigment 2 part B
+ Author: Jash Nguyen
+ Purpose: Application file
+**************************************************/
+
 #include <iostream>
 #include "main.h"
-
-
 
 /*PUT IN HEADER COMMENT FOR HEADER FILES*/
 int main() {
@@ -32,6 +36,9 @@ void setUpGame() {
     int dayCounter = 1;
     setUpCompanies(maxCompanies, "companies.txt");
     setUpShares();
+    // default risks
+    //setUpRisks("riskDefault.txt");
+    // Extra functionality: Advanced risks
     setUpRisks("risksAdvanced.txt");
     setUpPlayers(mode, playersNumber);
     char userChoice = ' ';

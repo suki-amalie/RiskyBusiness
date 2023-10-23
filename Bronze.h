@@ -1,6 +1,8 @@
-//
-// Created by ADMIN on 16-Sep-23.
-//
+/**************************************************
+ Project: Risky Business - Assigment 2 part B
+ Author: Jash Nguyen
+ Purpose: BRONZE COMPANY CLASS Header file
+**************************************************/
 
 #ifndef A2_JASHNGUYEN_BRONZE_H
 #define A2_JASHNGUYEN_BRONZE_H

@@ -1,6 +1,8 @@
-//
-// Created by ADMIN on 08-Sep-23.
-//
+/**************************************************
+ Project: Risky Business - Assigment 2 part B
+ Author: Jash Nguyen
+ Purpose: RISK CLASS Header file
+**************************************************/
 
 #ifndef A2_JASHNGUYEN_RISK_H
 #define A2_JASHNGUYEN_RISK_H
@@ -15,8 +17,11 @@ private:
     int maximum;
     int minimum;
 public:
+    // constructors
     Risk();
     Risk(string newName, string newEffect, int min, int max);
+
+    // accessor functions
     string getName();
     string getEffect();
     int getMax();
