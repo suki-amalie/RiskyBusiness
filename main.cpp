@@ -18,7 +18,7 @@ int main() {
     //displayTextFile("RBintro.txt");
     //displayCompanies();
     //displayRisks();
-
+    loadGame("gameData.txt");
     return 0;
 }
 
@@ -46,7 +46,9 @@ void setUpGame() {
         for (auto &player:players){
             displayGameInterface(player, minCompanies, minMoney, dayCounter);
             userChoice = askForLetter("What will you do now? ");
+            // Default menu
             checkMenuSelection(userChoice, player);
+            // Advanced menu
             if (player.getTotalCompaniesOwned() >= minCompanies && player.getMoney() >= minMoney) {
                 won = true;
                 cout << "Congratulations, " << player.getPlayerName() << "! You won :)\n";
@@ -57,8 +59,11 @@ void setUpGame() {
             waitForPlayer();
             clearScreen();
         }
+        /* Increase day counter by one and reset market shares */
         dayCounter ++;
+        resetSharesPrice();
     } while (not end);
+
 
     for (auto ptr:companies) {
         delete ptr;
@@ -90,7 +95,7 @@ void setUpPlayers(int mode, int playersNumber) {
 void setUpCompanies(int maxCompanies, string fileName) {
     // instantiate company object from data read from text file and store
     // them into companies global vector
-    fstream fileToRead(fileName);
+    ifstream fileToRead(fileName);
     int counter = 0;
     if (fileToRead.is_open()) {
         while (! fileToRead.eof() && counter < maxCompanies) {
@@ -121,8 +126,16 @@ void setUpCompanies(int maxCompanies, string fileName) {
 }
 
 void setUpShares() {
+    /* Set up the amount of shares and share price in each company */
     for (auto ptr:companies) {
         ptr ->setTotalShares(numberOfPlayers);
+        ptr ->setSharePrice(ptr -> getLevel());
+    }
+}
+
+void resetSharesPrice() {
+    /* Set the share price of each company to a new random value*/
+    for (auto ptr: companies) {
         ptr ->setSharePrice(ptr -> getLevel());
     }
 }
@@ -130,7 +143,7 @@ void setUpShares() {
 void setUpRisks(string fileName) {
     // instantiate risk object from data read from text file and store
     // them into risks global vector
-    fstream fileToRead(fileName);
+    ifstream fileToRead(fileName);
     if (fileToRead.is_open()) {
         while (! fileToRead.eof()) {
             string riskName, effect, min, max;
@@ -173,7 +186,42 @@ void checkMenuSelection(char userChoice, Player& player) {
             quitPlayer(player);
             break;
         }
+        default:
+            cout << "Invalid key\n";
+            break;
+    }
+}
 
+void checkMenuSelectionAdvanced(char userChoice, Player& player) {
+    switch (userChoice) {
+        case 'B': {
+            buyShares(player);
+            break;
+        }
+        case 'S': {
+            sellShares(player);
+            break;
+        }
+        case 'A': {
+            acquireCompany(player);
+            break;
+        }
+        case 'P': {
+            usePower(player);
+            break;
+        }
+        case 'R': {
+            takeARisk(player);
+            break;
+        }
+        case 'Q': {
+            quitPlayer(player);
+            break;
+        }
+        case 'V': {
+            saveGame("gameData.txt");
+            break;
+        }
         default:
             cout << "Invalid key\n";
             break;
@@ -185,13 +233,19 @@ void buyShares(Player & player) {
     int companyIndex = getCompanyIndex(companyKey);
     Company* ptr = companies[companyIndex];
 
-    //maxShares is the maximum number of shares that the user is able to buy
-    int maxShares = player.getMoney()/ptr->getSharePrice();
-    if (maxShares > 0) {
-        int numberOfShares = askForNumber("How many shares to buy: ", 1, maxShares);
-        player.buyShares(ptr, numberOfShares);
+    /*maxShares is the maximum number of shares that the user is able to buy from the given company
+     *based on player's money and company's available shares*/
+    if (ptr->getTotalShares() <= 0) {
+        cout << "This company doesnt have any available shares to buy.\n";
     } else {
-        cout << "You dont have enough money to buy shares.\n";
+        /* Player cannot buy more shares than the company's available shares*/
+        int maxShares = min(player.getMoney()/ptr->getSharePrice(), ptr->getTotalShares());
+        if (maxShares > 0) {
+            int numberOfShares = askForNumber("How many shares to buy: ", 1, maxShares);
+            player.buyShares(ptr, numberOfShares);
+        } else {
+            cout << "You dont have enough money to buy shares.\n";
+        }
     }
 }
 
@@ -208,7 +262,9 @@ void sellShares(Player& player) {
     }
 }
 
+
 void acquireCompany(Player & player) {
+    /* Default acquire company option*/
     char companyKey = askForCompanyKey("You want to acquire which company");
     int companyIndex = getCompanyIndex(companyKey);
     //check if company is already owned
@@ -322,7 +378,6 @@ void moneyEffect(Player &player, int min, int max) {
 }
 
 void shareEffect(Player & player, int min, int max) {
-    char companyKey = ' ';
     stringstream question;
     int randomValue = getRandomNum(min, max);
     int signedChange = (max > 0) ? randomValue : -1*randomValue;
@@ -333,7 +388,6 @@ void quitPlayer(Player player) {
     for (auto companyDetails: player.getCompaniesDetails()) {
         Company* ptr = companyDetails.first;
         int companyShares = companyDetails.second;
-        int companyIndex = getCompanyIndex(ptr->getKey());
         if (ptr->getOwnerName() == player.getPlayerName()) {
             ptr->setOwner(noOwner);
         }
@@ -343,7 +397,7 @@ void quitPlayer(Player player) {
     // erase player from global players vector
     int pos = getIndexFromPlayer(player);
     players.erase(players.begin() + pos);
-    cout << "Exited from game!\n";
+    cout << "Exited " << player.getPlayerName() << " from game!\n";
 }
 
 /********* DISPLAY FUNCTIONS *****************/
@@ -412,6 +466,16 @@ void displayMarket() {
     cout << descriptions.str();
 }
 
+void displayMenu() {
+    cout << setw(15) << "[B]uy" << setw(10) << "[S]ell" << setw(10) << "[P]ower" << setw(10) << "[R]isk" << setw(10) << "[Q]uit" << setw(10) << "[A]quire" << endl;
+
+}
+
+void displayMenuAdvanced() {
+    cout << setw(15) << "[B]uy" << setw(10) << "[S]ell" << setw(10) << "[P]ower" << setw(10) << "[R]isk" << setw(10) << "[Q]uit" << setw(12) << "[A]quire" << setw(10) << "Sa[V]e" << endl;
+
+}
+
 void displayGameInterface(Player &player, int minCompanies, int minMoney, int day) {
     cout << divider << endl;
     cout << "\t\tRisky Business :: Share Market Simulation\n";
@@ -420,7 +484,7 @@ void displayGameInterface(Player &player, int minCompanies, int minMoney, int da
     displayMarket();
     cout << player.getPortfolio();
     cout << divider << endl;
-    cout << setw(15) << "[B]uy" << setw(10) << "[S]ell" << setw(10) << "[P]ower" << setw(10) << "[R]isk" << setw(10) << "[Q]uit" << endl;
+    displayMenu();
     cout << divider << endl;
 }
 
@@ -468,17 +532,6 @@ int getIndexFromPlayer(Player player) {
         }
     }
 }
-
-/*
-void resetMarketShares() {
-    for (auto company:companies) {
-        if (company -> getPower() == "+ money") {
-            company = ;
-
-        }
-    }
-}
- */
 
 /****************** INPUT FUNCTIONS **********************/
 int askForNumber(string question, int min, int max) {
@@ -549,3 +602,33 @@ char askForCompanyKey(string question) {
     return companyKey;
 }
 
+/********************** EXTRA FUNCTIONALITIES ***********************/
+
+bool fileExist(string fileName) {
+    ifstream infile(fileName);
+    return infile.good();
+}
+
+void saveGame(string inputFile) {
+    ofstream fileToWrite(inputFile);
+    if (fileToWrite.is_open()) {
+        for (auto player:players) {
+            fileToWrite << player.getPlayerName();
+        }
+    }
+    fileToWrite.close();
+}
+
+void loadGame(string outputFile) {
+    string line;
+    if (fileExist(outputFile)) {
+        ifstream fileToRead(outputFile);
+        if (fileToRead.is_open()) {
+            while (not fileToRead.eof()) {
+                getline(fileToRead, line);
+                cout << line;
+            }
+        }
+        fileToRead.close();
+    }
+}

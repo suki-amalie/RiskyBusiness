@@ -44,14 +44,17 @@ string getCompanyKeys(int mode);
 
 /************ SET UP FUNCTIONS ****************/
 void setUpShares();
+void resetSharesPrice();
 void setUpPlayers(int mode, int playersNumber);
 void setUpGame();
 void setUpCompanies(int maxCompanies, string fileName);
 void setUpRisks(string fileName);
 
 /************* GAME FUNCTIONS ******************/
-void playGame(Player & player);
+void playGameDefault();
+void playGameAdvanced();
 void checkMenuSelection(char userChoice, Player & player);
+void checkMenuSelectionAdvanced(char userChoice, Player& player);
 void takeARisk(Player & player);
 void acquireCompany(Player & player);
 void usePower(Player & player);
@@ -72,7 +75,14 @@ void displayCompanies();
 void displayRisks();
 void displayTitle();
 void displayTextFile(string myFile);
+void displayMenu();
+void displayMenuAdvanced();
 void displayMarket();
 void displayGameInterface(Player &player, int minCompanies, int minMoney, int day);
 
+/********************** EXTRA FUNCTIONALITIES ***********************/
+
+bool fileExist(string fileName);
+void saveGame(string inputFile);
+void loadGame(string outputFile);
 #endif //A2_JASHNGUYEN_MAIN_H

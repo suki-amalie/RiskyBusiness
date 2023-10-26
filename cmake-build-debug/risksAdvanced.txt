@@ -13,7 +13,7 @@ Financial Scandal: Lose $;money;0;-50
 Small Win in the Lottery: Collect $;money;0;15
 Winnings from Poker Night: Collect $;money;10;20
 Minor Share Adjustment: ;shares;2;4
-Attend a Conference: Pay $;money;0;25
+Attend a Conference: Pay $;money;0;-25
 Company Share Bonus: ;shares;5;15
 Admirer Leaves a Gift: Collect $;money;5;10
 Performance Bonus:;assets;15;25

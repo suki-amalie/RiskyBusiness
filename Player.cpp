@@ -17,9 +17,6 @@ Player::Player(string name, int mode) {
     totalShares = 0;
 }
 
-Player::~Player() {
-    cout << "~~~~~~~~~~~~~~~ DELETING " << playerName << "~~~~~~~~~~~~~~~~~~~~~~\n";
-}
 
 int Player::getTotalCompaniesOwned() {
     return totalCompaniesOwned;

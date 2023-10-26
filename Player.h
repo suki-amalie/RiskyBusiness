@@ -30,7 +30,7 @@ private:
 public:
     Player();
     Player(string name, int mode);
-    ~Player();
+    ~Player()=default;
 
     string getPlayerName();
     string getDetails();
