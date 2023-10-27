@@ -13,7 +13,10 @@ int main() {
     srand(unsigned (time(nullptr)));
     //setUpRisks("riskDefault.txt");
     //setUpCompanies(3, "companies.txt");
-    setUpGame();
+    // Default game play
+    //setUpGame(0);
+    // Advanced game play
+    setUpGame(1);
     //display intro to game
     //displayTextFile("RBintro.txt");
     //displayCompanies();
@@ -24,7 +27,9 @@ int main() {
 
 /************** SETUP FUNCTIONS ***********************/
 
-void setUpGame() {
+void setUpGame(int gameMode) {
+    /* gameMode is an integer value with 0 representing default game play and
+     * 1 representing the advanced gameplay */
     bool won = false;
     bool end = false;
     int mode = askForNumber("Enter game mode", 4, 6);
@@ -36,19 +41,35 @@ void setUpGame() {
     int dayCounter = 1;
     setUpCompanies(maxCompanies, "companies.txt");
     setUpShares();
-    // default risks
-    //setUpRisks("riskDefault.txt");
-    // Extra functionality: Advanced risks
-    setUpRisks("risksAdvanced.txt");
+
+    if (gameMode == 0) {
+        // default risks
+        setUpRisks("riskDefault.txt");
+    } else {
+        if (gameMode == 1) {
+            // Extra functionality: Advanced risks
+            setUpRisks("risksAdvanced.txt");
+        }
+    }
+
     setUpPlayers(mode, playersNumber);
     char userChoice = ' ';
     do {
         for (auto &player:players){
             displayGameInterface(player, minCompanies, minMoney, dayCounter);
-            userChoice = askForLetter("What will you do now? ");
-            // Default menu
-            checkMenuSelection(userChoice, player);
-            // Advanced menu
+            if (gameMode == 0) {
+                // Default menu
+                displayMenu();
+                userChoice = askForLetter("What will you do now? ");
+                checkMenuSelection(userChoice, player);
+
+            } else {
+                // Advanced menu
+                displayMenuAdvanced();
+                userChoice = askForLetter("What will you do now? ");
+                checkMenuSelectionAdvanced(userChoice, player);
+            }
+
             if (player.getTotalCompaniesOwned() >= minCompanies && player.getMoney() >= minMoney) {
                 won = true;
                 cout << "Congratulations, " << player.getPlayerName() << "! You won :)\n";
@@ -76,6 +97,25 @@ void setUpGame() {
     cout << "\tThank you for testing this program :)\n";
     waitForPlayer();
     clearScreen();
+}
+
+void resetGame() {
+
+    // clear company pointers
+    for (auto company:companies) {
+        delete company;
+        company = nullptr;
+    }
+
+    // clear risks vector
+    risks.clear();
+
+    // clear players vector
+    for (auto &player:players) {
+        player.getCompaniesDetails().clear();
+    }
+
+    players.clear();
 }
 
 void setUpPlayers(int mode, int playersNumber) {
@@ -203,7 +243,7 @@ void checkMenuSelectionAdvanced(char userChoice, Player& player) {
             break;
         }
         case 'A': {
-            acquireCompany(player);
+            acquireCompanyAdvanced(player);
             break;
         }
         case 'P': {
@@ -220,6 +260,14 @@ void checkMenuSelectionAdvanced(char userChoice, Player& player) {
         }
         case 'V': {
             saveGame("gameData.txt");
+            break;
+        }
+        case 'L': {
+            loadGame("gameData.txt");
+            break;
+        }
+        case 'M': {
+            mergeCompany(player);
             break;
         }
         default:
@@ -257,6 +305,9 @@ void sellShares(Player& player) {
     if (maxShares > 0) {
         int numberOfShares = askForNumber("How many shares to sell: ", 1, maxShares);
         player.sellShares(companies[companyIndex], numberOfShares);
+        // increase company's total available shares
+        companies[companyIndex]->updateShares(numberOfShares);
+
     } else {
         cout << "You dont have any shares to sell\n";
     }
@@ -279,6 +330,71 @@ void acquireCompany(Player & player) {
         }
     } else {
         cout << "This company is already owned.\n";
+    }
+}
+
+bool haveAnotherShareHolder(char companyKey, string playerName) {
+    for (auto player: players) {
+        if ((player.getCompanyShares(companyKey) > 0) && (player.getPlayerName() != playerName)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+void acquireCompanyAdvanced(Player & player) {
+    char companyKey = askForCompanyKey("You want to acquire which company");
+    int companyIndex = getCompanyIndex(companyKey);
+    //check if company is already owned
+    if (companies[companyIndex] -> getOwnerName() == noOwner && (not haveAnotherShareHolder(companyKey, player.getPlayerName()))) {
+        int playerShares = player.getCompanyShares(companyKey);
+        if (playerShares >= companies[companyIndex]->getTotalShares()) {
+            companies[companyIndex]->setOwner(player.getPlayerName());
+            player.updateTotalCompaniesOwned(1);
+            cout << "Successfully acquired " << companies[companyIndex]->getCompanyName() << endl;
+        } else {
+            cout << "You dont have enough shares to acquire this company.\n";
+        }
+    }
+
+}
+
+void mergeCompany(Player & player) {
+    char companyKey = askForCompanyKey("You want to merge which company");
+    int companyIndex = getCompanyIndex(companyKey);
+    bool validMerger = false;
+    if (haveAnotherShareHolder(companyKey, player.getPlayerName())) {
+        if (player.getCompanyShares(companyKey) > 0) {
+            while (not validMerger) {
+                string shareHolderName = askForString("Which opponent do you want to merge with? ");
+                if (shareHolderName == player.getPlayerName()) {
+                    cout << "You cannot merge with yourself!\n";
+                } else {
+                    for (auto &otherPlayer: players) {
+                        if (otherPlayer.getPlayerName() == shareHolderName) {
+                            int shares = otherPlayer.getCompanyShares(companyKey);
+                            if ( shares > 0) {
+                                validMerger = true;
+                                int mergeCost = shares*(companies[companyIndex])->getSharePrice();
+                                if (player.getMoney() >= mergeCost) {
+                                    otherPlayer.sellShares(companies[companyIndex], shares);
+                                    player.buyShares(companies[companyIndex], shares);
+                                    cout << "Merge successfully.\n";
+                                } else {
+                                    cout << "You dont have enough money to merge.\n";
+                                }
+                            } else {
+                                cout << "This player doesn't own share in this company to merge with.\n";
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            cout << "You dont own any company shares to merge with.\n";
+        }
+    } else {
+        cout << "There's no other shareholders of this company to merge with.\n";
     }
 }
 
@@ -327,7 +443,7 @@ void sharePower(Player &player, int amount) {
     char companyKey = askForCompanyKey("Select which company to " + action + " shares");
     int companyIndex = getCompanyIndex(companyKey);
     Company* ptr = companies[companyIndex];
-    player.addCompanyShares(ptr, amount);
+    player.updateCompanyShares(ptr, amount);
     cout << action << amount << " " << ptr -> getCompanyName() + "'s shares to" + player.getPlayerName() + "'s portfolio\n";
 }
 
@@ -400,6 +516,7 @@ void quitPlayer(Player player) {
     cout << "Exited " << player.getPlayerName() << " from game!\n";
 }
 
+
 /********* DISPLAY FUNCTIONS *****************/
 
 void waitForPlayer() {
@@ -468,11 +585,13 @@ void displayMarket() {
 
 void displayMenu() {
     cout << setw(15) << "[B]uy" << setw(10) << "[S]ell" << setw(10) << "[P]ower" << setw(10) << "[R]isk" << setw(10) << "[Q]uit" << setw(10) << "[A]quire" << endl;
+    cout << divider << endl;
 
 }
 
 void displayMenuAdvanced() {
-    cout << setw(15) << "[B]uy" << setw(10) << "[S]ell" << setw(10) << "[P]ower" << setw(10) << "[R]isk" << setw(10) << "[Q]uit" << setw(12) << "[A]quire" << setw(10) << "Sa[V]e" << endl;
+    cout << setw(15) << "[B]uy" << setw(10) << "[S]ell" << setw(10) << "[P]ower" << setw(10) << "[R]isk" << setw(10) << "[Q]uit" << setw(12) << "[A]quire" << setw(12) << "[M]erge" << setw(10) << "Sa[V]e" << endl;
+    cout << divider << endl;
 
 }
 
@@ -483,8 +602,6 @@ void displayGameInterface(Player &player, int minCompanies, int minMoney, int da
     cout << "\t#Companies to win: " << minCompanies << "\tMin Money: $" << minMoney << "\t\tDay: " << day << endl;
     displayMarket();
     cout << player.getPortfolio();
-    cout << divider << endl;
-    displayMenu();
     cout << divider << endl;
 }
 

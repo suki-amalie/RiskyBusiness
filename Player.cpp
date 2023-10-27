@@ -76,7 +76,7 @@ void Player::updateTotalShares(int change) {
 }
 
 void Player::buyShares(Company* ptr, int amount) {
-    addCompanyShares(ptr, amount);
+    updateCompanyShares(ptr, amount);
     updateTotalShares(amount);
     updateMoney(-1*amount*ptr->getSharePrice());
 }
@@ -87,11 +87,13 @@ map<Company*, int> Player::getCompaniesDetails() {
 
 void Player::sellShares(Company* ptr, int amount) {
     cout << "inside player sell Shares\n";
+    // decrease player's shares in company by sell amount
     companiesDetails[ptr] -= amount;
-    ptr->updateShares(amount);
+    // decrease player's total shares
     updateTotalShares(-1*amount);
+    // increase player's money
     updateMoney(amount*ptr->getSharePrice());
-    // remove company from player's companies if company if not owned by player and
+    // remove company from player's companies if company is not owned by player and
     // player has no shares in company
     if (companiesDetails[ptr] <= 0 && ptr->getOwnerName() != playerName) {
         companiesDetails.erase(ptr); //remove company pointer from player's companies
@@ -105,7 +107,6 @@ void Player::updatePowerUsage(int change) {
 void Player::updateTotalCompaniesOwned(int change) {
     totalCompaniesOwned += change;
 }
-
 
 int Player::getCompanyShares(char companyKey) {
     for (auto pair:companiesDetails) {
@@ -147,7 +148,7 @@ int Player::getMode() {
     return gameMode;
 }
 
-void Player::addCompanyShares(Company *ptr, int amount) {
+void Player::updateCompanyShares(Company *ptr, int amount) {
     if (companiesDetails.find(ptr) != companiesDetails.end()) {
         companiesDetails[ptr] += amount;
     } else

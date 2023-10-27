@@ -46,17 +46,21 @@ string getCompanyKeys(int mode);
 void setUpShares();
 void resetSharesPrice();
 void setUpPlayers(int mode, int playersNumber);
-void setUpGame();
+void setUpGame(int gameMode);
+void resetGame();
 void setUpCompanies(int maxCompanies, string fileName);
 void setUpRisks(string fileName);
 
 /************* GAME FUNCTIONS ******************/
-void playGameDefault();
-void playGameAdvanced();
+
 void checkMenuSelection(char userChoice, Player & player);
 void checkMenuSelectionAdvanced(char userChoice, Player& player);
 void takeARisk(Player & player);
 void acquireCompany(Player & player);
+bool haveAnotherShareHolder(char companyKey, string playerName);
+void acquireCompanyAdvanced(Player & player);
+
+void mergeCompany(Player & player);
 void usePower(Player & player);
 void moneyPower(Player &player, int amount);
 void sharePower(Player &player, int amount);

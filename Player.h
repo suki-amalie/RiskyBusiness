@@ -51,7 +51,7 @@ public:
     void setPlayerName(string name);
 
     void updateTotalShares(int change);
-    void addCompanyShares(Company* ptr, int amount);
+    void updateCompanyShares(Company* ptr, int amount);
     void updatePowerUsage(int change);
     void updateTotalCompaniesOwned(int change);
     void buyShares(Company* ptr, int amount);

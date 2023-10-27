@@ -91,6 +91,12 @@ build CMakeFiles/A2_JashNguyen.dir/Player.cpp.obj: CXX_COMPILER__A2_JashNguyen_D
   OBJECT_DIR = CMakeFiles\A2_JashNguyen.dir
   OBJECT_FILE_DIR = CMakeFiles\A2_JashNguyen.dir
 
+build CMakeFiles/A2_JashNguyen.dir/GameDefault.cpp.obj: CXX_COMPILER__A2_JashNguyen_Debug C$:/Users/ADMIN/CLionProjects/A2_JashNguyen/GameDefault.cpp || cmake_object_order_depends_target_A2_JashNguyen
+  DEP_FILE = CMakeFiles\A2_JashNguyen.dir\GameDefault.cpp.obj.d
+  FLAGS = -g -fdiagnostics-color=always
+  OBJECT_DIR = CMakeFiles\A2_JashNguyen.dir
+  OBJECT_FILE_DIR = CMakeFiles\A2_JashNguyen.dir
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target A2_JashNguyen
@@ -99,7 +105,7 @@ build CMakeFiles/A2_JashNguyen.dir/Player.cpp.obj: CXX_COMPILER__A2_JashNguyen_D
 #############################################
 # Link the executable A2_JashNguyen.exe
 
-build A2_JashNguyen.exe: CXX_EXECUTABLE_LINKER__A2_JashNguyen_Debug CMakeFiles/A2_JashNguyen.dir/main.cpp.obj CMakeFiles/A2_JashNguyen.dir/Company.cpp.obj CMakeFiles/A2_JashNguyen.dir/Bronze.cpp.obj CMakeFiles/A2_JashNguyen.dir/Silver.cpp.obj CMakeFiles/A2_JashNguyen.dir/Gold.cpp.obj CMakeFiles/A2_JashNguyen.dir/Risk.cpp.obj CMakeFiles/A2_JashNguyen.dir/Player.cpp.obj
+build A2_JashNguyen.exe: CXX_EXECUTABLE_LINKER__A2_JashNguyen_Debug CMakeFiles/A2_JashNguyen.dir/main.cpp.obj CMakeFiles/A2_JashNguyen.dir/Company.cpp.obj CMakeFiles/A2_JashNguyen.dir/Bronze.cpp.obj CMakeFiles/A2_JashNguyen.dir/Silver.cpp.obj CMakeFiles/A2_JashNguyen.dir/Gold.cpp.obj CMakeFiles/A2_JashNguyen.dir/Risk.cpp.obj CMakeFiles/A2_JashNguyen.dir/Player.cpp.obj CMakeFiles/A2_JashNguyen.dir/GameDefault.cpp.obj
   FLAGS = -g
   LINK_LIBRARIES = -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\A2_JashNguyen.dir

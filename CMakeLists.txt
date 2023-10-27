@@ -3,4 +3,4 @@ project(A2_JashNguyen)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(A2_JashNguyen main.cpp Company.cpp Bronze.cpp Bronze.h Silver.cpp Silver.h Gold.cpp Gold.h Risk.cpp Player.cpp)
+add_executable(A2_JashNguyen main.cpp Company.cpp Bronze.cpp Bronze.h Silver.cpp Silver.h Gold.cpp Gold.h Risk.cpp Player.cpp GameDefault.cpp GameDefault.h)
