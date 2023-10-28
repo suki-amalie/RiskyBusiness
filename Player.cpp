@@ -77,6 +77,7 @@ void Player::updateTotalShares(int change) {
 
 void Player::buyShares(Company* ptr, int amount) {
     updateCompanyShares(ptr, amount);
+    ptr->updateShares(-1*amount);
     updateTotalShares(amount);
     updateMoney(-1*amount*ptr->getSharePrice());
 }
@@ -155,7 +156,6 @@ void Player::updateCompanyShares(Company *ptr, int amount) {
     {
         companiesDetails[ptr] = amount;
     }
-    ptr->updateShares(-1*amount);
 }
 
 

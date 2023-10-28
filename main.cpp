@@ -7,11 +7,13 @@
 #include <iostream>
 #include "main.h"
 #include "GameDefault.h"
-
+#include "GameAdvanced.h"
 
 /*PUT IN HEADER COMMENT FOR HEADER FILES*/
 int main() {
     //set up new seed
+    GameDefault* bPtr;
+    GameAdvanced gameAdvanced;
     srand(unsigned (time(nullptr)));
 
     //display intro to game
@@ -21,10 +23,12 @@ int main() {
     int numberOfPlayers = askForNumber("Enter number of players", 1, 3);
 
     // Default game play
-    GameDefault(gameMode, numberOfPlayers, 1);
+    //bPtr = new GameDefault(gameMode, numberOfPlayers, 1);
 
     // Advanced game play
+    bPtr = new GameAdvanced(gameMode, numberOfPlayers, 1);
 
+    bPtr->playGame();
     return 0;
 }
 

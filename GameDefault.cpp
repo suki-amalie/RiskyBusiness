@@ -73,7 +73,6 @@ GameDefault::GameDefault(int newGameMode, int playerNum, int currentDay) {
     setUpPlayers(gameMode, playersNumber);
     setUpRisks("riskDefault.txt");
 
-    playGame();
 }
 
 GameDefault::~GameDefault() {
@@ -105,13 +104,6 @@ void  GameDefault::resetGame() {
         company = nullptr;
     }
 
-    // clear risks vector
-    risks.clear();
-
-    // clear players vector
-    for (auto &player:players) {
-        player.getCompaniesDetails().clear();
-    }
 
     players.clear();
 }
@@ -230,50 +222,6 @@ void GameDefault::checkMenuSelection(char userChoice, Player& player) {
     }
 }
 
-void GameDefault::checkMenuSelectionAdvanced(char userChoice, Player& player, int currentDay) {
-    switch (userChoice) {
-        case 'B': {
-            buyShares(player);
-            break;
-        }
-        case 'S': {
-            sellShares(player);
-            break;
-        }
-        case 'A': {
-            acquireCompanyAdvanced(player);
-            break;
-        }
-        case 'P': {
-            usePower(player);
-            break;
-        }
-        case 'R': {
-            takeARisk(player);
-            break;
-        }
-        case 'Q': {
-            quitPlayer(player);
-            break;
-        }
-        case 'V': {
-            saveGame("gameData.txt", player.getMode(), currentDay);
-            break;
-        }
-        case 'L': {
-            loadGame("gameData.txt");
-            break;
-        }
-        case 'M': {
-            mergeCompany(player);
-            break;
-        }
-        default:
-            cout << "Invalid key\n";
-            break;
-    }
-}
-
 void GameDefault::buyShares(Player & player) {
     char companyKey = askForCompanyKey("Buy shares in which company");
     int companyIndex = getCompanyIndex(companyKey);
@@ -346,70 +294,6 @@ void GameDefault::acquireCompany(Player & player) {
     }
 }
 
-bool GameDefault::haveAnotherShareHolder(char companyKey, string playerName) {
-    for (auto player: players) {
-        if ((player.getCompanyShares(companyKey) > 0) && (player.getPlayerName() != playerName)) {
-            return true;
-        }
-    }
-    return false;
-}
-
-void GameDefault::acquireCompanyAdvanced(Player & player) {
-    char companyKey = askForCompanyKey("You want to acquire which company");
-    int companyIndex = getCompanyIndex(companyKey);
-    //check if company is already owned
-    if (companies[companyIndex] -> getOwnerName() == noOwner && (not haveAnotherShareHolder(companyKey, player.getPlayerName()))) {
-        int playerShares = player.getCompanyShares(companyKey);
-        if (playerShares >= companies[companyIndex]->getTotalShares()) {
-            companies[companyIndex]->setOwner(player.getPlayerName());
-            player.updateTotalCompaniesOwned(1);
-            cout << "Successfully acquired " << companies[companyIndex]->getCompanyName() << endl;
-        } else {
-            cout << "You dont have enough shares to acquire this company.\n";
-        }
-    }
-
-}
-
-void GameDefault::mergeCompany(Player & player) {
-    char companyKey = askForCompanyKey("You want to merge which company");
-    int companyIndex = getCompanyIndex(companyKey);
-    bool validMerger = false;
-    if (haveAnotherShareHolder(companyKey, player.getPlayerName())) {
-        if (player.getCompanyShares(companyKey) > 0) {
-            while (not validMerger) {
-                string shareHolderName = askForString("Which opponent do you want to merge with? ");
-                if (shareHolderName == player.getPlayerName()) {
-                    cout << "You cannot merge with yourself!\n";
-                } else {
-                    for (auto &otherPlayer: players) {
-                        if (otherPlayer.getPlayerName() == shareHolderName) {
-                            int shares = otherPlayer.getCompanyShares(companyKey);
-                            if ( shares > 0) {
-                                validMerger = true;
-                                int mergeCost = shares*(companies[companyIndex])->getSharePrice();
-                                if (player.getMoney() >= mergeCost) {
-                                    otherPlayer.sellShares(companies[companyIndex], shares);
-                                    player.buyShares(companies[companyIndex], shares);
-                                    cout << "Merge successfully.\n";
-                                } else {
-                                    cout << "You dont have enough money to merge.\n";
-                                }
-                            } else {
-                                cout << "This player doesn't own share in this company to merge with.\n";
-                            }
-                        }
-                    }
-                }
-            }
-        } else {
-            cout << "You dont own any company shares to merge with.\n";
-        }
-    } else {
-        cout << "There's no other shareholders of this company to merge with.\n";
-    }
-}
 
 void GameDefault::usePower(Player & player) {
     int mode = player.getMode();
@@ -457,11 +341,12 @@ void GameDefault::sharePower(Player &player, int amount) {
     int companyIndex = getCompanyIndex(companyKey);
     Company* ptr = companies[companyIndex];
     player.updateCompanyShares(ptr, amount);
+    ptr->updateShares(-1*amount);
     cout << action << amount << " " << ptr -> getCompanyName() + "'s shares to" + player.getPlayerName() + "'s portfolio\n";
 }
 
 void GameDefault::takeARisk(Player &player) {
-    Risk chosenRisk = risks[getRandomNum(0, risks.size()-1)];
+    Risk chosenRisk = risks[rand()%risks.size()];
     string effect = chosenRisk.getEffect();
     string name = chosenRisk.getName();
     int max = chosenRisk.getMax();
@@ -538,7 +423,7 @@ void GameDefault::displayMarket() {
     descriptions << divider << endl;
     descriptions << setw(35) << "Available" << setw(10) << "Current" << setw(10) << "Company"<< setw(12) << "Current" << "\n";
     descriptions << setw(34) << "Shares" << setw(10) << "Value" << setw(10) << "Cost" << setw(12) << "Owner" << "\n";
-    for (auto & ptr:companies) {
+    for (auto ptr:companies) {
         descriptions << setw(25) << ptr->getCompanyName() << setw(7) << ptr->getTotalShares()<< setw(10)
                      << ptr->getSharePrice() << setw(11) << ptr->getCompanyCost() << setw(14) << ptr->getOwnerName() << endl;
     }
@@ -547,12 +432,6 @@ void GameDefault::displayMarket() {
 
 void GameDefault::displayMenu() {
     cout << setw(15) << "[B]uy" << setw(10) << "[S]ell" << setw(10) << "[P]ower" << setw(10) << "[R]isk" << setw(10) << "[Q]uit" << setw(10) << "[A]quire" << endl;
-    cout << divider << endl;
-
-}
-
-void GameDefault::displayMenuAdvanced() {
-    cout << setw(15) << "[B]uy" << setw(10) << "[S]ell" << setw(10) << "[P]ower" << setw(10) << "[R]isk" << setw(10) << "[Q]uit" << setw(12) << "[A]quire" << setw(12) << "[M]erge" << setw(10) << "Sa[V]e" << endl;
     cout << divider << endl;
 
 }
@@ -608,68 +487,9 @@ int GameDefault::getIndexFromPlayer(Player player) {
 }
 
 
-/********************** EXTRA FUNCTIONALITIES ***********************/
-
-bool GameDefault::fileExist(string fileName) {
-    ifstream infile(fileName);
-    return infile.good();
-}
-
-void GameDefault::saveGame(string inputFile, int gameMode, int dayCounter) {
-    ofstream fileToWrite(inputFile);
-    if (fileToWrite.is_open()) {
-        fileToWrite << gameMode << endl;
-        fileToWrite << dayCounter << endl;
-        // write companies
-        fileToWrite << companies.size() << endl;
-        for (auto company: companies) {
-            fileToWrite << company->getCompanyName() << endl;
-            fileToWrite << company->getLevel() << endl;
-            fileToWrite << company->getTotalShares() << endl;
-            fileToWrite << company->getSharePrice() << endl;
-            fileToWrite << company->getCompanyCost() << endl;
-            fileToWrite << company->getOwnerName() << endl;
-        }
-        // write risks
-        fileToWrite << risks.size() << endl;
-        for (auto risk: risks) {
-            fileToWrite << risk.getName() << endl;
-            fileToWrite << risk.getEffect() << endl;
-            fileToWrite << risk.getMin() << endl;
-            fileToWrite << risk.getMax() << endl;
-        }
-        // write players
-        fileToWrite << players.size() << endl;
-        for (auto player: players) {
-            fileToWrite << player.getPlayerName() << endl;
-            fileToWrite << player.getMoney() << endl;
-            fileToWrite << player.getTotalShares() << endl;
-            fileToWrite << player.getPowerUsageLeft() << endl;
-            fileToWrite << player.getTotalCompaniesOwned() << endl;
-            fileToWrite << player.getCompaniesDetails().size() << endl;
-            for (auto companyDetail: player.getCompaniesDetails()) {
-                fileToWrite << companyDetail.first->getCompanyName() << ';' << companyDetail.second << endl;
-            }
-        }
 
 
-    }
-    fileToWrite.close();
-}
 
-void GameDefault::loadGame(string outputFile) {
-    string line;
-    if (fileExist(outputFile)) {
-        ifstream fileToRead(outputFile);
-        if (fileToRead.is_open()) {
-            while (not fileToRead.eof()) {
-                getline(fileToRead, line);
-                cout << line << endl;
-            }
-        }
-        fileToRead.close();
-    }
-}
 
 
 

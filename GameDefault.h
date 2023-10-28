@@ -10,7 +10,7 @@
 using namespace std;
 
 class GameDefault {
-private:
+protected:
     int gameMode;
     int dayCounter;
     int playersNumber;
@@ -24,7 +24,7 @@ private:
     string noOwner = "-------";
 public:
 
-    /********** MAIN FUNCTION ******/
+    virtual /********** MAIN FUNCTION ******/
     void playGame();
 
     /********** CONSTRUCTORS ************/
@@ -42,8 +42,6 @@ public:
     void setUpShares();
     void setUpRisks(string fileName);
     void setUpPlayers(int mode, int playersNumber);
-    void setUpGame(int gameMode);
-
 
     /********* GET FUNCTIONS ************************/
     int getIndexFromPlayer(Player player);
@@ -60,15 +58,12 @@ public:
 
     void resetGame();
 
-
     /************* GAME FUNCTIONS ******************/
 
-    void checkMenuSelection(char userChoice, Player & player);
-    void checkMenuSelectionAdvanced(char userChoice, Player& player, int currentDay);
+    virtual void checkMenuSelection(char userChoice, Player & player);
     void takeARisk(Player & player);
-    void acquireCompany(Player & player);
-    bool haveAnotherShareHolder(char companyKey, string playerName);
-    void acquireCompanyAdvanced(Player & player);
+    virtual void acquireCompany(Player & player);
+
 
     /***************** INPUT FUNCTION *****************/
     char askForCompanyKey(string question);
@@ -86,16 +81,10 @@ public:
 
     /*************** DISPLAY FUNCTIONS ************/
 
-    void displayMenu();
-    void displayMenuAdvanced();
+    virtual void displayMenu();
     void displayMarket();
     void displayGameInterface(Player &player, int minCompanies, int minMoney, int day);
 
-    /********************** EXTRA FUNCTIONALITIES ***********************/
-
-    bool fileExist(string fileName);
-    void saveGame(string inputFile, int gameMode, int dayCounter);
-    void loadGame(string outputFile);
 };
 
 

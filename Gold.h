@@ -15,6 +15,9 @@ private:
 public:
     Gold();
     Gold(string name);
+    Gold(string newName, string newOwner, int newShares, int newSharePrice, int newCost);
+
+
     string getDetails();
     string getPower();
     int getLevel();

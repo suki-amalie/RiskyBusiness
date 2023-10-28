@@ -16,6 +16,8 @@ private:
 public:
     Bronze();
     Bronze(string name);
+    Bronze(string newName, string newOwner, int newShares, int newSharePrice, int newCost);
+
     string getDetails();
     string getPower();
     int getLevel();

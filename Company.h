@@ -24,6 +24,7 @@ public:
     // constructors
     Company();
     Company(string name);
+    Company(string newName, string newOwner, int newShares, int newSharePrice, int newCost);
     virtual ~Company() = default;
 
     // accessor functions

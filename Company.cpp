@@ -12,6 +12,14 @@ Company::Company(string name) {
     owner = "-------"; //initialize to be empty
 }
 
+Company::Company(string newName, string newOwner, int newShares, int newSharePrice, int newCost){
+    setCompanyName(newName);
+    setOwner(newOwner);
+    shares = newShares;
+    sharePrice = newSharePrice;
+    companyCost = newCost;
+}
+
 
 int Company::getSharePrice() {
     return sharePrice;
@@ -63,5 +71,7 @@ void Company::setCompanyCost(int level) {
 int Company::getCompanyCost() {
     return companyCost;
 }
+
+
 
 

@@ -16,6 +16,8 @@ private:
 public:
     Silver();
     Silver(string name);
+    Silver(string newName, string newOwner, int newShares, int newSharePrice, int newCost);
+
     string getDetails();
     string getPower();
     int getLevel();

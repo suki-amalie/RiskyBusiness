@@ -33,5 +33,15 @@ string Bronze::getPower() {
     return power;
 }
 
+Bronze::Bronze(string newName, string newOwner, int newShares, int newSharePrice, int newCost) : Company(newName,
+                                                                                                         newOwner,
+                                                                                                         newShares,
+                                                                                                         newSharePrice,
+                                                                                                         newCost) {
+
+}
+
+
+
 
 
