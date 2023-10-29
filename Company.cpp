@@ -5,6 +5,7 @@
 **************************************************/
 
 #include "Company.h"
+
 Company::Company() {
     owner = "-------"; //initialize to be empty
 }

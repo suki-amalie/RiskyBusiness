@@ -70,7 +70,7 @@ GameDefault::GameDefault(int newGameMode, int playerNum, int currentDay) {
     int maxCompanies = getMaxCompanies(gameMode);
     setUpCompanies(maxCompanies, "companies.txt");
     setUpShares();
-    setUpPlayers(gameMode, playersNumber);
+    setUpPlayers(gameMode);
     setUpRisks("riskDefault.txt");
 
 }
@@ -96,13 +96,13 @@ void  GameDefault::resetGame() {
     players.clear();
 }
 
-void GameDefault::setUpPlayers(int mode, int playersNumb) {
+void GameDefault::setUpPlayers(int playersNumb) {
     for (int i=0; i<playersNumb; i++) {
         stringstream question;
-        cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n";
+        cout << string("~", WIDTH) << endl;
         question << "Enter player " <<  i+1 << "'s name: ";
         string name = askForString(question.str());
-        Player newPlayer(name, mode);
+        Player newPlayer(name, gameMode);
         cout << newPlayer.getDetails();
         players.push_back(newPlayer);
     }
@@ -408,15 +408,16 @@ char GameDefault::askForCompanyKey(string question) {
 /***************************** DISPLAY FUNCTIONS ***************************/
 
 void GameDefault::displayTitle() {
-    cout << divider << endl;
+    cout << string("~", WIDTH) << endl;
     cout << "\t\tRisky Business :: Share Market Simulation\n";
-    cout << divider << endl;
+    cout << string("~", WIDTH) << endl;
+
 }
 
 /*display company's total shares, share price, cost and owner*/
 void GameDefault::displayMarket() {
     stringstream descriptions;
-    descriptions << divider << endl;
+    cout << string("~", WIDTH) << endl;
     descriptions << setw(35) << "Available" << setw(10) << "Current" << setw(10) << "Company"<< setw(12) << "Current" << "\n";
     descriptions << setw(34) << "Shares" << setw(10) << "Value" << setw(10) << "Cost" << setw(12) << "Owner" << "\n";
     for (auto ptr:companies) {
@@ -428,7 +429,7 @@ void GameDefault::displayMarket() {
 
 void GameDefault::displayMenu() {
     cout << setw(15) << "[B]uy" << setw(10) << "[S]ell" << setw(10) << "[P]ower" << setw(10) << "[R]isk" << setw(10) << "[Q]uit" << setw(10) << "[A]quire" << endl;
-    cout << divider << endl;
+    cout << string("~", WIDTH) << endl;
 
 }
 
@@ -437,7 +438,8 @@ void GameDefault::displayGameInterface(Player player) {
     cout << "\t#Companies to win: " << minCompanies << "\tMin Money: $" << minMoney << "\t\tDay: " << dayCounter << endl;
     displayMarket();
     cout << player.getPortfolio();
-    cout << divider << endl;
+    cout << string("~", WIDTH) << endl;
+
 }
 
 /**************************** GET FUNCTIONS ****************************/

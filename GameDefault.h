@@ -7,11 +7,19 @@
 #ifndef A2_JASHNGUYEN_GAMEDEFAULT_H
 #define A2_JASHNGUYEN_GAMEDEFAULT_H
 
-#include "main.h"
+#include "Player.h"
+#include "Company.h"
+#include "Bronze.h"
+#include "Silver.h"
+#include "Gold.h"
+#include "Risk.h"
+#include "workhorse.h"
+
 using namespace std;
 
 class GameDefault {
 protected:
+    const int WIDTH = 100;
     int gameMode;
     int dayCounter;
     int playersNumber;
@@ -21,7 +29,6 @@ protected:
     int minCompanies;
     int minMoney;
     int maxDays;
-    string divider = string(100, '~');
     string noOwner = "-------";
 public:
 
@@ -40,7 +47,7 @@ public:
     void setUpCompanies(int maxCompanies, string fileName);
     void setUpShares();
     void setUpRisks(string fileName);
-    void setUpPlayers(int mode, int playersNumb);
+    void setUpPlayers(int playersNumb);
 
     /********* GET FUNCTIONS ************************/
     int getIndexFromPlayer(Player player);

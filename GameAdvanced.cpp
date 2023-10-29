@@ -5,6 +5,7 @@
 **************************************************/
 
 #include "GameAdvanced.h"
+#include "workhorse.h"
 
 /************************* CONSTRUCTORS *********************/
 
@@ -221,7 +222,7 @@ void GameAdvanced::loadGame(string outputFile) {
 
 void GameAdvanced::displayMenu() {
     cout << setw(15) << "[B]uy" << setw(10) << "[S]ell" << setw(10) << "[P]ower" << setw(10) << "[R]isk" << setw(10) << "[Q]uit" << setw(12) << "[A]quire" << setw(12) << "[M]erge" << setw(10) << "Sa[V]e" << setw(10) << "[L]oad" << endl;
-    cout << divider << endl;
+    cout << string("~", WIDTH) << endl;
 }
 
 

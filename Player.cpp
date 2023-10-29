@@ -5,6 +5,9 @@
 **************************************************/
 
 #include "Player.h"
+#include "workhorse.h"
+
+
 Player::Player() {
     playerName = "";
     totalCompaniesOwned = 0;
@@ -126,10 +129,9 @@ void Player::setPowerUsage(int number) {
 
 string Player::getPortfolio() {
     stringstream portfolio;
-    portfolio << string(100, '~') << endl;
     portfolio << "\t\t" << getPlayerName() << "'s Share Portfolio and Assets\n";
     portfolio << string(100, '~') << endl;
-    portfolio << setw(18) << "Total money: $" << money << setw(20) << "Companies Owned: "
+    portfolio << center("Total money: $", 25) << money << setw(20) << "Companies Owned: "
     << totalCompaniesOwned << setw(20) << "Total Shares: " << totalShares <<
     setw(12) << "Power: " << getPowerUsageLeft() << "\n";
     if (getCompaniesDetails().size() > 0) {
