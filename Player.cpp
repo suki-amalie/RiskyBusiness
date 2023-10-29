@@ -1,6 +1,8 @@
-//
-// Created by ADMIN on 08-Sep-23.
-//
+/**************************************************
+ Project: Risky Business - Assigment 2 part B
+ Author: Jash Nguyen (34327681)
+ Purpose: Player class application file
+**************************************************/
 
 #include "Player.h"
 Player::Player() {
@@ -124,10 +126,10 @@ void Player::setPowerUsage(int number) {
 
 string Player::getPortfolio() {
     stringstream portfolio;
-    portfolio << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+    portfolio << string(100, '~') << endl;
     portfolio << "\t\t" << getPlayerName() << "'s Share Portfolio and Assets\n";
-    portfolio << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
-    portfolio << setw(10) << "Total money: $" << money << setw(20) << "Companies Owned: "
+    portfolio << string(100, '~') << endl;
+    portfolio << setw(18) << "Total money: $" << money << setw(20) << "Companies Owned: "
     << totalCompaniesOwned << setw(20) << "Total Shares: " << totalShares <<
     setw(12) << "Power: " << getPowerUsageLeft() << "\n";
     if (getCompaniesDetails().size() > 0) {

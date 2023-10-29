@@ -1,6 +1,8 @@
-//
-// Created by ADMIN on 08-Sep-23.
-//
+/**************************************************
+ Project: Risky Business - Assigment 2 part B
+ Author: Jash Nguyen (34327681)
+ Purpose: Risk class application file
+**************************************************/
 
 #include "Risk.h"
 

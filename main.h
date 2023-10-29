@@ -1,6 +1,8 @@
-//
-// Created by ADMIN on 08-Sep-23.
-//
+/**************************************************
+ Project: Risky Business - Assigment 2 part B
+ Author: Jash Nguyen (34327681)
+ Purpose: main header file
+**************************************************/
 
 #ifndef A2_JASHNGUYEN_MAIN_H
 #define A2_JASHNGUYEN_MAIN_H
@@ -17,6 +19,7 @@
 #include "Silver.h"
 #include "Gold.h"
 #include "Risk.h"
+
 using namespace std;
 
 
@@ -29,7 +32,7 @@ char askForLetter(string question);
 /*************** DISPLAY FUNCTIONS ************/
 void waitForPlayer();
 void clearScreen();
-void displayTitle();
 void displayTextFile(string myFile);
+std::string center(const string s, const int w);
 
 #endif //A2_JASHNGUYEN_MAIN_H

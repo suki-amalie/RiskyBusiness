@@ -4,6 +4,12 @@
  Purpose: SILVER COMPANY CLASS Header file
 **************************************************/
 
+/**************************************************
+ Project: Risky Business - Assigment 2 part B
+ Author: Jash Nguyen (34327681)
+ Purpose: Silver class application file
+**************************************************/
+
 #ifndef A2_JASHNGUYEN_SILVER_H
 #define A2_JASHNGUYEN_SILVER_H
 #include "Company.h"
