@@ -77,7 +77,6 @@ void Player::updateTotalShares(int change) {
 
 void Player::buyShares(Company* ptr, int amount) {
     updateCompanyShares(ptr, amount);
-    ptr->updateShares(-1*amount);
     updateTotalShares(amount);
     updateMoney(-1*amount*ptr->getSharePrice());
 }
@@ -87,7 +86,6 @@ map<Company*, int> Player::getCompaniesDetails() {
 }
 
 void Player::sellShares(Company* ptr, int amount) {
-    cout << "inside player sell Shares\n";
     // decrease player's shares in company by sell amount
     companiesDetails[ptr] -= amount;
     // decrease player's total shares

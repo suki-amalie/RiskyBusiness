@@ -4,6 +4,7 @@
 
 #include "GameAdvanced.h"
 
+/********** CONSTRUCTORS ******/
 
 GameAdvanced::GameAdvanced():GameDefault() {
 
@@ -13,6 +14,7 @@ GameAdvanced::GameAdvanced(int newGameMode, int playerNum, int currentDay) : Gam
                                                                                          currentDay) {
 
 }
+/************* GAME FUNCTIONS ******************/
 
 void GameAdvanced::checkMenuSelection(char userChoice, Player &player) {
 
@@ -133,8 +135,6 @@ void GameAdvanced::displayMenu() {
     cout << divider << endl;
 }
 
-/********************** EXTRA FUNCTIONALITIES ***********************/
-
 bool GameAdvanced::fileExist(string fileName) {
     ifstream infile(fileName);
     return infile.good();
@@ -168,6 +168,7 @@ void GameAdvanced::saveGame(string inputFile) {
 void GameAdvanced::loadGame(string outputFile) {
     string line;
     int mode, day, companiesNum, playersNum;
+    // clear up companies pointer vector and players vector
     resetGame();
     if (fileExist(outputFile)) {
         ifstream fileToRead(outputFile);
@@ -221,3 +222,5 @@ void GameAdvanced::loadGame(string outputFile) {
 
     }
 }
+
+

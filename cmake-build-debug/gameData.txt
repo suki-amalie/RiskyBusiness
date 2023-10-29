@@ -1,64 +1,61 @@
-6 11 18 2
+6 4 18 2
 [A]ll Star Studios   
 -------
-3 56 3 30
+3 10 1 30
 [B]ookworm Bookshops 
 -------
-4 78 2 40
+4 44 2 40
 [C]hocoholics Inc    
 -------
-5 72 3 50
+5 84 4 50
 [D]ingo Dogwash      
-yes
-3 -69 3 30
+-------
+3 50 3 30
 [E]legant Car Sales  
 -------
-4 80 4 40
+4 76 2 40
 [F]lash Designs Inc  
 -------
-5 72 3 50
+5 74 2 50
 [G]ladies Galore!    
 -------
-3 68 2 30
+3 50 4 30
 [H]eather's Hotels   
 -------
-4 70 2 40
+4 66 3 40
 [I]ncredible Cakes   
 -------
-5 84 4 50
+5 90 4 50
 [J]umble Records     
 -------
-3 42 4 30
+3 70 2 30
 [K]att's Krafts      
 -------
-4 74 4 40
+4 64 3 40
 [L]icorice Allsorts  
 -------
-5 80 2 50
+5 80 3 50
 [M]agic Max's Music  
 -------
-3 68 4 30
+3 52 2 30
 [N]erk and Sons      
 -------
-4 80 3 40
+4 76 3 40
 [O]mnibus Travel Co  
 -------
-5 74 3 50
+5 82 4 50
 [P]eregrine Flights  
 -------
-3 66 2 30
+3 70 1 30
 [Q]uark Enterprises  
 -------
-4 74 1 40
+4 60 2 40
 [R]usty Hinge Repairs
 -------
-5 74 4 50
-ys
-1664 -29 4 0 2
-A;5
-D;24
-yes
--572 68 4 1 3
-A;7
-D;68
-J;14
+5 80 2 50
+A
+160 60 4 0 1
+A;60
+B
+320 20 4 0 1
+B;20

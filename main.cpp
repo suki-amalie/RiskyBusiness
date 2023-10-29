@@ -4,15 +4,13 @@
  Purpose: Application file
 **************************************************/
 
-#include <iostream>
 #include "main.h"
 #include "GameDefault.h"
 #include "GameAdvanced.h"
 
-/*PUT IN HEADER COMMENT FOR HEADER FILES*/
 int main() {
     //set up new seed
-    GameDefault* bPtr;
+    GameDefault* bPtr = nullptr;
     GameAdvanced gameAdvanced;
     srand(unsigned (time(nullptr)));
 
@@ -29,6 +27,9 @@ int main() {
     bPtr = new GameAdvanced(gameMode, numberOfPlayers, 1);
 
     bPtr->playGame();
+
+    // clean up memory
+    delete bPtr;
     return 0;
 }
 
@@ -50,7 +51,6 @@ void clearScreen() {
 }
 
 void displayTitle() {
-    // use this if NOT using the title as a constant
     cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
     cout << "\t\tRisky Business :: Share Market Simulation\n";
     cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
@@ -122,8 +122,9 @@ string askForString(string question) {
     while (response == "") {
         cout << question;
         getline(cin, response);
-        return response;
     }
+    return response;
+
 }
 
 

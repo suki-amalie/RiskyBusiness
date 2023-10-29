@@ -1,27 +1,18 @@
 
-/**************************************************
- Project: Risky Business - Assigment 2 part B
- Author: Jash Nguyen
- Purpose: Application file
-**************************************************/
 
 #include <iostream>
 #include "GameDefault.h"
 
-
-/*PUT IN HEADER COMMENT FOR HEADER FILES*/
-
 /********** MAIN FUNCTION ******/
+
 void GameDefault::playGame() {
-    /* gameMode is an integer value with 0 representing default game play and
-     * 1 representing the advanced gameplay */
 
     bool won = false;
     bool end = false;
     char userChoice = ' ';
     do {
         for (auto &player:players){
-            displayGameInterface(player, minCompanies, minMoney, dayCounter);
+            displayGameInterface(player);
             displayMenu();
             userChoice = askForLetter("What will you do now? ");
             checkMenuSelection(userChoice, player);
@@ -30,7 +21,7 @@ void GameDefault::playGame() {
                 won = true;
                 cout << "Congratulations, " << player.getPlayerName() << "! You won :)\n";
             }
-            if (dayCounter >= maxDays || won || players.size() <= 0) {
+            if (dayCounter >= maxDays || won || players.empty()) {
                 end = true;
             }
             waitForPlayer();
@@ -55,6 +46,9 @@ GameDefault::GameDefault() {
     dayCounter = 1;
     gameMode = 4;
     playersNumber = 1;
+    minCompanies = 1;
+    minMoney = 100;
+    maxDays = 1;
 }
 
 GameDefault::GameDefault(int newGameMode, int playerNum, int currentDay) {
@@ -76,6 +70,7 @@ GameDefault::GameDefault(int newGameMode, int playerNum, int currentDay) {
 }
 
 GameDefault::~GameDefault() {
+    // clean up pointers
     for (auto ptr:companies) {
         delete ptr;
         ptr = nullptr;
@@ -96,20 +91,8 @@ void GameDefault::setPlayersNumber(int val) {
     playersNumber = val;
 }
 
-void  GameDefault::resetGame() {
-
-    // clear company pointers
-    for (auto company:companies) {
-        delete company;
-        company = nullptr;
-    }
-
-
-    players.clear();
-}
-
-void GameDefault::setUpPlayers(int mode, int playersNumber) {
-    for (int i=0; i<playersNumber; i++) {
+void GameDefault::setUpPlayers(int mode, int playersNumb) {
+    for (int i=0; i<playersNumb; i++) {
         stringstream question;
         cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n";
         question << "Enter player " <<  i+1 << "'s name: ";
@@ -138,15 +121,16 @@ void GameDefault::setUpCompanies(int maxCompanies, string fileName) {
                 case 1: {
                     companies.push_back(new Bronze(companyName));
                     break;
-                };
+                }
                 case 2: {
                     companies.push_back(new Silver(companyName));
                     break;
-                };
+                }
                 case 3: {
                     companies.push_back(new Gold(companyName));
                     break;
                 }
+                default: {cout << "Invalid company level.\n";}
 
             }
             counter ++;
@@ -163,12 +147,6 @@ void GameDefault::setUpShares() {
     }
 }
 
-void GameDefault::resetSharesPrice() {
-    /* Set the share price of each company to a new random value*/
-    for (auto ptr: companies) {
-        ptr ->setSharePrice(ptr -> getLevel());
-    }
-}
 
 void GameDefault::setUpRisks(string fileName) {
     // instantiate risk object from data read from text file and store
@@ -189,6 +167,25 @@ void GameDefault::setUpRisks(string fileName) {
 }
 
 /******************** GAME FUNCTIONS *********************/
+
+void GameDefault::resetSharesPrice() {
+    /* Set the share price of each company to a new random value*/
+    for (auto ptr: companies) {
+        ptr ->setSharePrice(ptr -> getLevel());
+    }
+}
+
+void  GameDefault::resetGame() {
+
+    // clear company pointers
+    for (auto company:companies) {
+        delete company;
+        company = nullptr;
+    }
+
+
+    players.clear();
+}
 
 void GameDefault::checkMenuSelection(char userChoice, Player& player) {
     switch (userChoice) {
@@ -237,6 +234,9 @@ void GameDefault::buyShares(Player & player) {
         if (maxShares > 0) {
             int numberOfShares = askForNumber("How many shares to buy: ", 1, maxShares);
             player.buyShares(ptr, numberOfShares);
+            // decrease company shares
+            ptr->updateShares(-numberOfShares);
+
         } else {
             cout << "You dont have enough money to buy shares.\n";
         }
@@ -259,7 +259,6 @@ void GameDefault::sellShares(Player& player) {
     }
 }
 
-/******************* INPUT FUNCTION ******************/
 char GameDefault::askForCompanyKey(string question) {
     /* ask for company key until a valid company key is input, return the company key*/
     char companyKey = ' ';
@@ -275,6 +274,7 @@ char GameDefault::askForCompanyKey(string question) {
     }
     return companyKey;
 }
+
 void GameDefault::acquireCompany(Player & player) {
     /* Default acquire company option*/
     char companyKey = askForCompanyKey("You want to acquire which company");
@@ -294,30 +294,29 @@ void GameDefault::acquireCompany(Player & player) {
     }
 }
 
-
 void GameDefault::usePower(Player & player) {
-    int mode = player.getMode();
     if (player.getPowerUsageLeft() > 0) {
         char companyKey = askForCompanyKey("Use the cooperate power of which company");
         int companyIndex = getCompanyIndex(companyKey);
         Company* ptr = companies[companyIndex];
         if (ptr->getOwnerName() == player.getPlayerName()) {
-            int multiplier = rand() % mode + 2;
+            int multiplier = rand() % gameMode + 2;
             int level = ptr -> getLevel();
             switch (level) {
                 case 3: {
-                    moneyPower(player, mode*multiplier*10);
+                    moneyPower(player, gameMode*multiplier*10);
                     break;
                 }
                 case 4: {
-                    sharePower(player, mode*multiplier);
+                    sharePower(player, gameMode*multiplier);
                     break;
                 }
                 case 5: {
-                    sharePower(player, mode*multiplier);
-                    moneyPower(player, mode*multiplier*10);
+                    sharePower(player, gameMode*multiplier);
+                    moneyPower(player, gameMode*multiplier*10);
                     break;
                 }
+                default: {cout << "Invalid company level.\n";}
             }
             player.updatePowerUsage(-1);
         } else {
@@ -410,8 +409,13 @@ void GameDefault::quitPlayer(Player player) {
     }
     // erase player from global players vector
     int pos = getIndexFromPlayer(player);
-    players.erase(players.begin() + pos);
-    cout << "Exited " << player.getPlayerName() << " from game!\n";
+    if (pos != -1) {
+        players.erase(players.begin() + pos);
+        cout << "Exited " << player.getPlayerName() << " from game!\n";
+    } else {
+        cout << "Player does not exist!\n";
+    }
+
 }
 
 
@@ -436,11 +440,11 @@ void GameDefault::displayMenu() {
 
 }
 
-void GameDefault::displayGameInterface(Player &player, int minCompanies, int minMoney, int day) {
+void GameDefault::displayGameInterface(Player player) {
     cout << divider << endl;
     cout << "\t\tRisky Business :: Share Market Simulation\n";
     cout << divider << endl;
-    cout << "\t#Companies to win: " << minCompanies << "\tMin Money: $" << minMoney << "\t\tDay: " << day << endl;
+    cout << "\t#Companies to win: " << minCompanies << "\tMin Money: $" << minMoney << "\t\tDay: " << dayCounter << endl;
     displayMarket();
     cout << player.getPortfolio();
     cout << divider << endl;
@@ -484,6 +488,7 @@ int GameDefault::getIndexFromPlayer(Player player) {
             return i;
         }
     }
+    return -1;
 }
 
 

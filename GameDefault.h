@@ -1,12 +1,20 @@
-//
-// Created by ADMIN on 26-Oct-23.
-//
+/**************************************************
+ Project: Risky Business - Assigment 2 part B
+ Author: Jash Nguyen (34327681)
+ Purpose: GAME DEFAULT CLASS Header file
+**************************************************/
 
 #ifndef A2_JASHNGUYEN_GAMEDEFAULT_H
 #define A2_JASHNGUYEN_GAMEDEFAULT_H
 
 
 #include "main.h"
+#include "Player.h"
+#include "Company.h"
+#include "Bronze.h"
+#include "Silver.h"
+#include "Gold.h"
+#include "Risk.h"
 using namespace std;
 
 class GameDefault {
@@ -24,7 +32,7 @@ protected:
     string noOwner = "-------";
 public:
 
-    virtual /********** MAIN FUNCTION ******/
+    /****************** MAIN FUNCTION ******************/
     void playGame();
 
     /********** CONSTRUCTORS ************/
@@ -41,7 +49,7 @@ public:
     void setUpCompanies(int maxCompanies, string fileName);
     void setUpShares();
     void setUpRisks(string fileName);
-    void setUpPlayers(int mode, int playersNumber);
+    void setUpPlayers(int mode, int playersNumb);
 
     /********* GET FUNCTIONS ************************/
     int getIndexFromPlayer(Player player);
@@ -52,20 +60,13 @@ public:
     int getMinCompanies(int mode);
     int getRandomNum(int min, int max);
 
-    /************ MUTATOR FUNCTIONS ****************/
-
-    void resetSharesPrice();
-
-    void resetGame();
-
     /************* GAME FUNCTIONS ******************/
 
+    void resetSharesPrice();
+    void resetGame();
     virtual void checkMenuSelection(char userChoice, Player & player);
     void takeARisk(Player & player);
     virtual void acquireCompany(Player & player);
-
-
-    /***************** INPUT FUNCTION *****************/
     char askForCompanyKey(string question);
     void mergeCompany(Player & player);
     void usePower(Player & player);
@@ -75,15 +76,13 @@ public:
     void shareEffect(Player & player, int min, int max);
     void buyShares(Player & player);
     void sellShares(Player& player);
-
-    /**************** PLAYER FUNCTIONS *************/
     void quitPlayer(Player player);
 
     /*************** DISPLAY FUNCTIONS ************/
 
     virtual void displayMenu();
     void displayMarket();
-    void displayGameInterface(Player &player, int minCompanies, int minMoney, int day);
+    void displayGameInterface(Player player);
 
 };
 

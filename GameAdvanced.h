@@ -1,6 +1,8 @@
-//
-// Created by ADMIN on 27-Oct-23.
-//
+/**************************************************
+ Project: Risky Business - Assigment 2 part B
+ Author: Jash Nguyen (34327681)
+ Purpose: GAME ADVANCED CLASS Header file
+**************************************************/
 
 #ifndef A2_JASHNGUYEN_GAMEADVANCED_H
 #define A2_JASHNGUYEN_GAMEADVANCED_H
@@ -10,18 +12,16 @@ using  namespace std;
 
 class GameAdvanced: public GameDefault {
 public:
-    /********** MAIN FUNCTION ******/
+    /********** CONSTRUCTORS ******/
     GameAdvanced();
     GameAdvanced(int newGameMode, int playerNum, int currentDay);
-    void checkMenuSelection(char userChoice, Player& player);
 
+    /************* GAME FUNCTIONS ******************/
+    void checkMenuSelection(char userChoice, Player& player);
     bool haveAnotherShareHolder(char companyKey, string playerName);
     void acquireCompany(Player & player);
     void mergeCompany(Player & player);
     void displayMenu();
-
-    /********************** EXTRA FUNCTIONALITIES ***********************/
-
     bool fileExist(string fileName);
     void saveGame(string inputFile);
     void loadGame(string outputFile);

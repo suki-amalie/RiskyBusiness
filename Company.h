@@ -1,6 +1,6 @@
 /**************************************************
  Project: Risky Business - Assigment 2 part B
- Author: Jash Nguyen
+ Author: Jash Nguyen (34327681)
  Purpose: BASE COMPANY CLASS Header file
 **************************************************/
 
