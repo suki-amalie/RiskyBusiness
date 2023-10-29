@@ -1,25 +1,16 @@
-/**************************************************
- Project: Risky Business - Assigment 2 part B
- Author: Jash Nguyen (34327681)
- Purpose: GameDefault class header file
-**************************************************/
+//
+// Created by ADMIN on 26-Oct-23.
+//
 
 #ifndef A2_JASHNGUYEN_GAMEDEFAULT_H
 #define A2_JASHNGUYEN_GAMEDEFAULT_H
 
-#include "Player.h"
-#include "Company.h"
-#include "Bronze.h"
-#include "Silver.h"
-#include "Gold.h"
-#include "Risk.h"
-#include "workhorse.h"
 
+#include "main.h"
 using namespace std;
 
 class GameDefault {
 protected:
-    const int WIDTH = 100;
     int gameMode;
     int dayCounter;
     int playersNumber;
@@ -29,10 +20,11 @@ protected:
     int minCompanies;
     int minMoney;
     int maxDays;
+    string divider = string(70, '~');
     string noOwner = "-------";
 public:
 
-    /********** MAIN FUNCTION ******/
+    virtual /********** MAIN FUNCTION ******/
     void playGame();
 
     /********** CONSTRUCTORS ************/
@@ -43,11 +35,13 @@ public:
     ~GameDefault();
 
     /************ SETTER FUNCTIONS *********/
-
+    void setGameMode(int val);
+    void setDay(int val);
+    void setPlayersNumber(int val);
     void setUpCompanies(int maxCompanies, string fileName);
     void setUpShares();
     void setUpRisks(string fileName);
-    void setUpPlayers(int playersNumb);
+    void setUpPlayers(int mode, int playersNumber);
 
     /********* GET FUNCTIONS ************************/
     int getIndexFromPlayer(Player player);
@@ -61,6 +55,7 @@ public:
     /************ MUTATOR FUNCTIONS ****************/
 
     void resetSharesPrice();
+
     void resetGame();
 
     /************* GAME FUNCTIONS ******************/
@@ -68,6 +63,11 @@ public:
     virtual void checkMenuSelection(char userChoice, Player & player);
     void takeARisk(Player & player);
     virtual void acquireCompany(Player & player);
+
+
+    /***************** INPUT FUNCTION *****************/
+    char askForCompanyKey(string question);
+    void mergeCompany(Player & player);
     void usePower(Player & player);
     void moneyPower(Player &player, int amount);
     void sharePower(Player &player, int amount);
@@ -75,16 +75,15 @@ public:
     void shareEffect(Player & player, int min, int max);
     void buyShares(Player & player);
     void sellShares(Player& player);
-    void quitPlayer(Player player);
-    char askForCompanyKey(string question);
 
+    /**************** PLAYER FUNCTIONS *************/
+    void quitPlayer(Player player);
 
     /*************** DISPLAY FUNCTIONS ************/
 
-    void displayTitle();
     virtual void displayMenu();
     void displayMarket();
-    void displayGameInterface(Player player);
+    void displayGameInterface(Player &player, int minCompanies, int minMoney, int day);
 
 };
 

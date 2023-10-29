@@ -4,26 +4,14 @@
 
 #include "Silver.h"
 
-/**************************************************
- Project: Risky Business - Assigment 2 part B
- Author: Jash Nguyen (34327681)
- Purpose: Silver class application file
-**************************************************/
-
 Silver::Silver():Company() {
+
 }
 
 Silver::Silver(string name) : Company(name) {
     Company::setCompanyCost(level);
 }
 
-Silver::Silver(string newName, string newOwner, int newShares, int newSharePrice, int newCost) : Company(newName,
-                                                                                                         newOwner,
-                                                                                                         newShares,
-                                                                                                         newSharePrice,
-                                                                                                         newCost) {
-
-}
 
 int Silver::getLevel() {
     return level;
@@ -46,7 +34,13 @@ string Silver::getDetails() {
     return companyDetails.str();
 }
 
+Silver::Silver(string newName, string newOwner, int newShares, int newSharePrice, int newCost) : Company(newName,
+                                                                                                         newOwner,
+                                                                                                         newShares,
+                                                                                                         newSharePrice,
+                                                                                                         newCost) {
 
+}
 
 
 

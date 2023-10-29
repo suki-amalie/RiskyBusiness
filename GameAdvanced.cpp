@@ -1,22 +1,18 @@
-/**************************************************
- Project: Risky Business - Assigment 2 part B
- Author: Jash Nguyen (34327681)
- Purpose: GameAdvanced class application file
-**************************************************/
+//
+// Created by ADMIN on 27-Oct-23.
+//
 
 #include "GameAdvanced.h"
-#include "workhorse.h"
 
-/************************* CONSTRUCTORS *********************/
 
 GameAdvanced::GameAdvanced():GameDefault() {
+
 }
 
 GameAdvanced::GameAdvanced(int newGameMode, int playerNum, int currentDay) : GameDefault(newGameMode, playerNum,
                                                                                          currentDay) {
-}
 
-/********************** GAME FUNCTIONS **********************/
+}
 
 void GameAdvanced::checkMenuSelection(char userChoice, Player &player) {
 
@@ -64,12 +60,22 @@ void GameAdvanced::checkMenuSelection(char userChoice, Player &player) {
 
 }
 
+bool GameAdvanced::haveAnotherShareHolder(char companyKey, string playerName) {
+    for (auto player: players) {
+        if ((player.getCompanyShares(companyKey) > 0) && (player.getPlayerName() != playerName)) {
+            return true;
+        }
+    }
+    return false;
+}
+
 void GameAdvanced::acquireCompany(Player &player) {
 
     char companyKey = askForCompanyKey("You want to acquire which company");
     int companyIndex = getCompanyIndex(companyKey);
     //check if company is already owned
     if (companies[companyIndex] -> getOwnerName() == noOwner) {
+        int playerShares = player.getCompanyShares(companyKey);
         if (companies[companyIndex]->getTotalShares() <= 0 && (not haveAnotherShareHolder(companyKey, player.getPlayerName()))) {
             companies[companyIndex]->setOwner(player.getPlayerName());
             player.updateTotalCompaniesOwned(1);
@@ -122,14 +128,12 @@ void GameAdvanced::mergeCompany(Player & player) {
     }
 }
 
-bool GameAdvanced::haveAnotherShareHolder(char companyKey, string playerName) {
-    for (auto player: players) {
-        if ((player.getCompanyShares(companyKey) > 0) && (player.getPlayerName() != playerName)) {
-            return true;
-        }
-    }
-    return false;
+void GameAdvanced::displayMenu() {
+    cout << setw(15) << "[B]uy" << setw(10) << "[S]ell" << setw(10) << "[P]ower" << setw(10) << "[R]isk" << setw(10) << "[Q]uit" << setw(12) << "[A]quire" << setw(12) << "[M]erge" << setw(10) << "Sa[V]e" << setw(10) << "[L]oad" << endl;
+    cout << divider << endl;
 }
+
+/********************** EXTRA FUNCTIONALITIES ***********************/
 
 bool GameAdvanced::fileExist(string fileName) {
     ifstream infile(fileName);
@@ -182,11 +186,11 @@ void GameAdvanced::loadGame(string outputFile) {
                     case 3: {
                         companies[i] = new Bronze(companyName, owner, shares, sharePrice, cost);
                         break;
-                    }
+                    };
                     case 4: {
                         companies[i] = new Silver(companyName, owner, shares, sharePrice, cost);
                         break;
-                    }
+                    };
                     case 5: {
                         companies[i] = new Gold(companyName, owner, shares, sharePrice, cost);
                         break;
@@ -197,9 +201,9 @@ void GameAdvanced::loadGame(string outputFile) {
 
             for (int i = 0; i < playersNum; i ++) {
                 string playerName;
-                int money, playerShares, powerLeft, companiesOwned, companyDetails;
+                int money, shares, powerLeft, companiesOwned, companyDetails;
                 getline(fileToRead, playerName);
-                fileToRead >> money >> playerShares >> powerLeft >> companiesOwned >> companyDetails;
+                fileToRead >> money >> shares >> powerLeft >> companiesOwned >> companyDetails;
                 getline(fileToRead, line);
                 Player player(playerName, mode);
 
@@ -217,12 +221,3 @@ void GameAdvanced::loadGame(string outputFile) {
 
     }
 }
-
-/*************** DISPLAY FUNCTION **********************/
-
-void GameAdvanced::displayMenu() {
-    cout << setw(15) << "[B]uy" << setw(10) << "[S]ell" << setw(10) << "[P]ower" << setw(10) << "[R]isk" << setw(10) << "[Q]uit" << setw(12) << "[A]quire" << setw(12) << "[M]erge" << setw(10) << "Sa[V]e" << setw(10) << "[L]oad" << endl;
-    cout << string("~", WIDTH) << endl;
-}
-
-

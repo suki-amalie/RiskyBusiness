@@ -1,8 +1,6 @@
-/**************************************************
- Project: Risky Business - Assigment 2 part B
- Author: Jash Nguyen (34327681)
- Purpose: Gold class application file
-**************************************************/
+//
+// Created by ADMIN on 16-Sep-23.
+//
 
 #include "Gold.h"
 
