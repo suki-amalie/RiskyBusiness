@@ -3,9 +3,11 @@
 //
 
 #include "Player.h"
+
 Player::Player() {
     playerName = "";
     totalCompaniesOwned = 0;
+    isActive = false;
 }
 
 Player::Player(string name, int mode) {
@@ -15,6 +17,7 @@ Player::Player(string name, int mode) {
     setPowerUsage(10 - gameMode);
     setTotalCompaniesOwned(0);
     totalShares = 0;
+    setActiveState(true);
 }
 
 
@@ -41,6 +44,10 @@ void Player::setGameMode(int mode) {
 void Player::setPlayerName(string name) {
     playerName = name != "" ? name: "NONE";
 
+}
+
+void Player::setActiveState(bool newState) {
+    isActive = newState;
 }
 
 void Player::setMoney(int newAmount) {
@@ -149,6 +156,10 @@ string Player::getPortfolio() {
 
 int Player::getMode() {
     return gameMode;
+}
+
+bool Player::getState() {
+    return isActive;
 }
 
 void Player::updateCompanyShares(Company *ptr, int amount) {

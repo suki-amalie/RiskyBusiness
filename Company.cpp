@@ -4,8 +4,11 @@
 
 #include "Company.h"
 
+/************* CONSTRUCTORS ******************/
+
 Company::Company() {
-    owner = "-------"; //initialize to be empty
+    setCompanyName("None");
+    setOwner("-------"); //initialize to be empty
 }
 
 Company::Company(string name) {
@@ -21,6 +24,11 @@ Company::Company(string newName, string newOwner, int newShares, int newSharePri
     companyCost = newCost;
 }
 
+int Company::getCompanyCost() {
+    return companyCost;
+}
+
+/************* ACCESSOR FUNCTIONS ******************/
 
 int Company::getSharePrice() {
     return sharePrice;
@@ -43,6 +51,13 @@ char Company::getKey() {
     return key;
 }
 
+int Company::getTotalShares() {
+    return shares;
+}
+
+/************* MUTATOR FUNCTIONS ******************/
+
+
 void Company::updateShares(int change) {
     int newshares = shares + change;
     if ( newshares >= 0) {
@@ -54,11 +69,6 @@ void Company::updateShares(int change) {
 
 void Company::setSharePrice(int level) {
     sharePrice = rand()%(level+4) + 1;
-}
-
-
-int Company::getTotalShares() {
-    return shares;
 }
 
 void Company::setOwner(string name) {
@@ -74,9 +84,7 @@ void Company::setCompanyCost(int level) {
     companyCost = 2*5*level;
 }
 
-int Company::getCompanyCost() {
-    return companyCost;
-}
+
 
 
 

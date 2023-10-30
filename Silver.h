@@ -14,10 +14,12 @@ private:
     string power = "shares";
 
 public:
+    //constructors
     Silver();
     Silver(string name);
     Silver(string newName, string newOwner, int newShares, int newSharePrice, int newCost);
 
+    // accessor functions
     string getDetails();
     string getPower();
     int getLevel();

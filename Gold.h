@@ -13,11 +13,12 @@ private:
     int level = 5;
     string power = "assets";
 public:
+    //constructors
     Gold();
     Gold(string name);
     Gold(string newName, string newOwner, int newShares, int newSharePrice, int newCost);
 
-
+    // accessor functions
     string getDetails();
     string getPower();
     int getLevel();

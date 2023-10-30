@@ -46,6 +46,7 @@ public:
     void setCompanyName(string name);
     void updateShares(int change);
     void setOwner(string name);
+
 };
 
 

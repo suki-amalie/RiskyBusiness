@@ -1,6 +1,6 @@
 /**************************************************
  Project: Risky Business - Assigment 2 part B
- Author: Jash Nguyen
+ Author: Jash Nguyen (34327681)
  Purpose: Application file
 **************************************************/
 
@@ -20,7 +20,7 @@ int main() {
     displayTextFile("RBintroAdvanced.txt");
 
     int gameMode = askForNumber("Enter game difficulty level: ", 4, 6);
-    int numberOfPlayers = askForNumber("Enter number of players", 1, 3);
+    int numberOfPlayers = askForNumber("Enter number of players", 1, 4);
 
     // Default game play
     //bPtr = new GameDefault(gameMode, numberOfPlayers);

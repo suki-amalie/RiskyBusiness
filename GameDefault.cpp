@@ -6,22 +6,24 @@
 /********************** MAIN FUNCTION ********************/
 
 void GameDefault::playGame() {
-    bool end = false;
+    bool won = false;
     char userChoice = ' ';
     do {
         for (auto &player:players){
-            displayGameInterface(player);
-            displayMenu();
-            userChoice = askForLetter("What will you do now? ");
-            checkMenuSelection(userChoice, player);
-            end = endGame(player, dayCounter);
-            waitForPlayer();
-            clearScreen();
+            if (player.getState()) {
+                displayGameInterface(player);
+                displayMenu();
+                userChoice = askForLetter("What will you do now? ");
+                checkMenuSelection(userChoice, player);
+                won = endGame(player, dayCounter);
+                waitForPlayer();
+                clearScreen();
+            }
         }
         /* Increase day counter by one and reset market shares */
         dayCounter ++;
         resetSharesPrice();
-    } while (not end);
+    } while (not won && dayCounter < maxDays);
     cout << "\t\t\tEND GAME ~~~\n";
     cout << "\tThank you for testing this program :)\n";
     waitForPlayer();
@@ -168,15 +170,20 @@ int GameDefault::getCompanyIndex(char companyKey) {
     return -1;
 }
 
-int GameDefault::getIndexFromPlayer(Player player) {
-    for (int i=0; i<players.size(); i++) {
-        if (players[i].getPlayerName() == player.getPlayerName()) {
-            return i;
+char GameDefault::askToContinue(string question) {
+    char response = ' ';
+    string options = "YN";
+    bool end = false;
+    while (not end) {
+        response = askForLetter(question);
+        if (options.find(response) != string::npos) {
+            end = true;
+            return response;
+        } else {
+            cout << "Invalid key.\n";
         }
     }
-    return -1;
 }
-
 
 /******************** GAME FUNCTIONS *********************/
 
@@ -205,9 +212,6 @@ bool GameDefault::endGame(Player player, int day) {
         cout << "Maximum days reached! Game over!\n";
         end = true;
     } else {
-        if (players.empty()) {
-            end = true;
-        }
         if (player.getTotalCompaniesOwned() >= minCompanies and player.getMoney() >= minMoney) {
             cout << divider << endl;
             cout << setw(40) << "Congratulations, " << player.getPlayerName() << "! You won :)\n";
@@ -254,7 +258,7 @@ void GameDefault::checkMenuSelection(char userChoice, Player& player) {
 void GameDefault::buyShares(Player & player) {
     char companyKey = askForCompanyKey("Buy shares in which company");
     int companyIndex = getCompanyIndex(companyKey);
-    Company* ptr = companies[companyIndex];
+    Company *ptr = companies[companyIndex];
 
     /*maxShares is the maximum number of shares that the user is able to buy from the given company
      *based on player's money and company's available shares*/
@@ -262,10 +266,17 @@ void GameDefault::buyShares(Player & player) {
         cout << "This company doesnt have any available shares to buy.\n";
     } else {
         /* Player cannot buy more shares than the company's available shares*/
-        int maxShares = min(player.getMoney()/ptr->getSharePrice(), ptr->getTotalShares());
+        int maxShares = min(player.getMoney() / ptr->getSharePrice(), ptr->getTotalShares());
         if (maxShares > 0) {
             int numberOfShares = askForNumber("How many shares to buy: ", 1, maxShares);
             player.buyShares(ptr, numberOfShares);
+            char userInput = askToContinue("Do you want to buy more shares? (y/n) ");
+            if (userInput == 'Y') {
+                waitForPlayer();
+                clearScreen();
+                displayGameInterface(player);
+                buyShares(player);
+            }
         } else {
             cout << "You dont have enough money to buy shares.\n";
         }
@@ -281,7 +292,13 @@ void GameDefault::sellShares(Player& player) {
         int numberOfShares = askForNumber("How many shares to sell: ", 1, maxShares);
         player.sellShares(companies[companyIndex], numberOfShares);
         cout << "You earned $" << numberOfShares*(companies[companyIndex]->getSharePrice()) << " from selling shares!\n";
-
+        char userInput = askToContinue("Do you want to buy more shares? (y/n) ");
+        if (userInput == 'Y') {
+            waitForPlayer();
+            clearScreen();
+            displayGameInterface(player);
+            sellShares(player);
+        }
     } else {
         cout << "You dont have any shares to sell\n";
     }
@@ -314,11 +331,19 @@ void GameDefault::acquireCompany(Player & player) {
         if (playerShares >= companies[companyIndex]->getCompanyCost()) {
             companies[companyIndex]->setOwner(player.getPlayerName());
             player.updateTotalCompaniesOwned(1);
+            char userInput = askToContinue("Do you want to acquire more companies? (y/n) ");
+            if (userInput == 'Y') {
+                waitForPlayer();
+                clearScreen();
+                displayGameInterface(player);
+                acquireCompany(player);
+            }
+
         } else {
             cout << "You dont have enough shares to acquire this company.\n";
         }
     } else {
-        cout << "This company is already owned.\n";
+        cout << "This company is already acquired.\n";
     }
 }
 
@@ -328,7 +353,7 @@ void GameDefault::usePower(Player & player) {
         int companyIndex = getCompanyIndex(companyKey);
         Company* ptr = companies[companyIndex];
         if (ptr->getOwnerName() == player.getPlayerName()) {
-            int multiplier = rand() % gameMode + 2;
+            int multiplier = (rand() % gameMode) + 2;
             int level = ptr -> getLevel();
             switch (level) {
                 case 3: {
@@ -358,7 +383,7 @@ void GameDefault::usePower(Player & player) {
 void GameDefault::moneyPower(Player &player, int amount) {
     player.updateMoney(amount);
     string action = (amount > 0)? "Added" : "Minus";
-    cout << action << " $" << amount << " to " << player.getPlayerName()
+    cout << action << " $" << abs(amount) << " to " << player.getPlayerName()
          << "'s account\n";
 }
 
@@ -371,13 +396,16 @@ void GameDefault::sharePower(Player &player, int amount) {
     // making sure that we don't take away more shares than the company's available shares
     amount = min(amount, ptr->getTotalShares());
     player.updateCompanyShares(ptr, amount);
-    ptr->updateShares(-1*amount);
-    cout << action << amount << " " << ptr -> getCompanyName() + "'s shares to " + player.getPlayerName() + "'s portfolio\n";
+    if (amount > 0) {
+        ptr->updateShares(-1*amount);
+    }
+    cout << action << abs(amount) << " " << ptr -> getCompanyName() + "'s shares to " + player.getPlayerName() + "'s portfolio\n";
 }
 
 void GameDefault::takeARisk(Player &player) {
-    unsigned seed = chrono::system_clock::now().time_since_epoch().count();
-    shuffle(risks.begin(), risks.end(), default_random_engine(seed));
+    random_device rd;
+    mt19937 g(rd());
+    shuffle(risks.begin(), risks.end(), g);
     Risk chosenRisk = risks[rand()%risks.size()];
     string effect = chosenRisk.getEffect();
     string name = chosenRisk.getName();
@@ -430,7 +458,7 @@ void GameDefault::shareEffect(Player & player, int min, int max) {
     sharePower(player, signedChange);
 }
 
-void GameDefault::quitPlayer(Player player) {
+void GameDefault::quitPlayer(Player &player) {
     for (auto companyDetails: player.getCompaniesDetails()) {
         Company* ptr = companyDetails.first;
         int companyShares = companyDetails.second;
@@ -440,14 +468,8 @@ void GameDefault::quitPlayer(Player player) {
         // Return back company's shares from player to company's available shares;
         ptr->updateShares(companyShares);
     }
-    // erase player from global players vector
-    int pos = getIndexFromPlayer(player);
-    if (pos != -1) {
-        players.erase(players.begin() + pos);
-        cout << "Exited " << player.getPlayerName() << " from game!\n";
-    } else {
-        cout << "Player does not exist!\n";
-    }
+    player.setActiveState(false);
+    cout << "Exited " << player.getPlayerName() << " from game!\n";
 
 }
 
@@ -569,6 +591,8 @@ void GameDefault::testRisk() {
     testRisk = Risk("enrolled to univeristy", "money", 10, -50);
     cout << testRisk.getDetails();
 }
+
+
 
 
 

@@ -26,12 +26,16 @@ private:
     int totalCompaniesOwned;
     int gameMode; // Set game difficulty from 1-3
     int powerUsageLeft;
+    bool isActive;
     map<Company*, int> companiesDetails;  //list of company and its corresponding shares owned by player
 public:
+    // constructors
     Player();
     Player(string name, int mode);
+    // destructor
     ~Player()=default;
 
+    // accessor functions
     string getPlayerName();
     string getDetails();
     string getPortfolio();
@@ -42,13 +46,16 @@ public:
     int getPowerUsageLeft();
     int getCompanyShares(char companyKey);
     int getMode();
+    bool getState();
 
+    // mutator functions
     void setMoney(int newAmount);
     void setPowerUsage(int number);
     void updateMoney(int change);
     void setGameMode(int mode);
     void setTotalCompaniesOwned(int amount);
     void setPlayerName(string name);
+    void setActiveState(bool newState);
 
     void updateTotalShares(int change);
     void updateCompanyShares(Company* ptr, int amount);

@@ -1,6 +1,3 @@
-//
-// Created by ADMIN on 30-Oct-23.
-//
 
 #include "workHorse.h"
 
@@ -9,6 +6,7 @@
 void waitForPlayer() {
     // adjust new line and indents as required
     // Windows
+    cout << "\n\t\t ";
     system("pause");
     // Mac & Linux
     //system("read -n 1 -s -r -p \"Press any key to continue\"");
@@ -32,6 +30,8 @@ void displayTextFile(string myFile) {
         while (getline(blurbData, line)) {
             cout << line << "\n" ;
         }
+    } else {
+        cout << "File not found!\n";
     }
     blurbData.close();
     waitForPlayer();
@@ -70,7 +70,7 @@ char askForLetter(string question) {
     string userInput = "";
     bool valid = false;
     while (!valid) {
-        cout << "\n " + question;
+        cout << question;
         cin >> userInput;
         if (userInput.length() == 1 && isalpha(userInput[0])) {
             valid = true;

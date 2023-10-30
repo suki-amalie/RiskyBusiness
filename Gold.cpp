@@ -11,6 +11,12 @@ Gold::Gold(string name) : Company(name) {
     Company::setCompanyCost(level);
 }
 
+Gold::Gold(string newName, string newOwner, int newShares, int newSharePrice, int newCost) : Company(newName, newOwner,
+                                                                                                     newShares,
+                                                                                                     newSharePrice,
+                                                                                                     newCost) {
+
+}
 
 string Gold::getDetails() {
     stringstream companyDetails;
@@ -33,12 +39,7 @@ string Gold::getPower() {
     return power;
 }
 
-Gold::Gold(string newName, string newOwner, int newShares, int newSharePrice, int newCost) : Company(newName, newOwner,
-                                                                                                     newShares,
-                                                                                                     newSharePrice,
-                                                                                                     newCost) {
 
-}
 
 
 

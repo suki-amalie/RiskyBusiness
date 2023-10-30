@@ -80,11 +80,18 @@ void GameAdvanced::acquireCompany(Player &player) {
             companies[companyIndex]->setOwner(player.getPlayerName());
             player.updateTotalCompaniesOwned(1);
             cout << "Successfully acquired " << companies[companyIndex]->getCompanyName() << endl;
+            char userInput = askToContinue("Do you want to acquire more companies? (y/n) ");
+            if (userInput == 'Y') {
+                waitForPlayer();
+                clearScreen();
+                displayGameInterface(player);
+                GameAdvanced::acquireCompany(player);
+            }
         } else {
             cout << "You must own all the shares from this company to acquire it.\n";
         }
     } else {
-        cout << "This company is already owned by somebody else.\n";
+        cout << "This company is already acquired.\n";
     }
 
 }
@@ -109,7 +116,7 @@ void GameAdvanced::mergeCompany(Player & player) {
                                 if (player.getMoney() >= mergeCost) {
                                     otherPlayer.sellShares(companies[companyIndex], shares);
                                     player.buyShares(companies[companyIndex], shares);
-                                    cout << "Merge successfully.\n";
+                                    cout << "\t\t Merge successfully.\n";
                                 } else {
                                     cout << "You dont have enough money to merge.\n";
                                 }
@@ -152,10 +159,11 @@ void GameAdvanced::saveGame(string inputFile) {
                 fileToWrite << companyDetail.first->getKey() << ';' << companyDetail.second << endl;
             }
         }
-
-
+        fileToWrite.close();
+        cout << "\t\t Saved successfully.\n";
+    } else {
+        cout << "File unfound.\n";
     }
-    fileToWrite.close();
 }
 
 void GameAdvanced::loadGame(string outputFile) {
@@ -163,57 +171,58 @@ void GameAdvanced::loadGame(string outputFile) {
     int mode, day, companiesNum, playersNum;
     // clear up companies pointer vector and players vector
     resetGame();
-    if (fileExist(outputFile)) {
-        ifstream fileToRead(outputFile);
-        if (fileToRead.is_open()) {
-            fileToRead >> mode >> day >> companiesNum >> playersNum;
-            setGameMode(mode);
-            setDay(day);
-            for (int i = 0; i < companiesNum; i ++) {
-                string companyName, owner;
-                int level, shares, sharePrice, cost;
-                getline(fileToRead, line);
-                getline(fileToRead, companyName);
-                getline(fileToRead, owner);
-                fileToRead >> level >> shares >> sharePrice >> cost;
-                switch (level) {
-                    case 3: {
-                        companies[i] = new Bronze(companyName, owner, shares, sharePrice, cost);
-                        break;
-                    }
-                    case 4: {
-                        companies[i] = new Silver(companyName, owner, shares, sharePrice, cost);
-                        break;
-                    }
-                    case 5: {
-                        companies[i] = new Gold(companyName, owner, shares, sharePrice, cost);
-                        break;
-                        } default: {cout << "Invalid company level.\n";
-                    }
-                }
-            }
+    ifstream fileToRead(outputFile);
+    if (fileToRead.is_open()) {
+        fileToRead >> mode >> day >> companiesNum >> playersNum;
+        setGameMode(mode);
+        setDay(day);
+        for (int i = 0; i < companiesNum; i ++) {
+            string companyName, owner;
+            int level, shares, sharePrice, cost;
             getline(fileToRead, line);
-
-            for (int i = 0; i < playersNum; i ++) {
-                string playerName;
-                int money, companyShares, powerLeft, companiesOwned, companyDetails;
-                getline(fileToRead, playerName);
-                fileToRead >> money >> companyShares >> powerLeft >> companiesOwned >> companyDetails;
-                getline(fileToRead, line);
-                Player player(playerName, mode);
-
-                for (int j = 0; j < companyDetails; j ++) {
-                    string companyKey, shares;
-                    getline(fileToRead, companyKey, ';');
-                    getline(fileToRead, shares);
-                    player.updateCompanyShares(companies[getCompanyIndex(companyKey[0])], stoi(shares));
+            getline(fileToRead, companyName);
+            getline(fileToRead, owner);
+            fileToRead >> level >> shares >> sharePrice >> cost;
+            switch (level) {
+                case 3: {
+                    companies[i] = new Bronze(companyName, owner, shares, sharePrice, cost);
+                    break;
                 }
-                players.push_back(player);
-
+                case 4: {
+                    companies[i] = new Silver(companyName, owner, shares, sharePrice, cost);
+                    break;
+                }
+                case 5: {
+                    companies[i] = new Gold(companyName, owner, shares, sharePrice, cost);
+                    break;
+                    } default: {cout << "Invalid company level.\n";
+                }
             }
         }
-        fileToRead.close();
+        getline(fileToRead, line);
 
+        for (int i = 0; i < playersNum; i ++) {
+            string playerName;
+            int money, companyShares, powerLeft, companiesOwned, companyDetails;
+            getline(fileToRead, playerName);
+            fileToRead >> money >> companyShares >> powerLeft >> companiesOwned >> companyDetails;
+            getline(fileToRead, line);
+            Player player(playerName, mode);
+
+            for (int j = 0; j < companyDetails; j ++) {
+                string companyKey, shares;
+                getline(fileToRead, companyKey, ';');
+                getline(fileToRead, shares);
+                player.updateCompanyShares(companies[getCompanyIndex(companyKey[0])], stoi(shares));
+            }
+            players.push_back(player);
+
+        }
+        fileToRead.close();
+        cout << "\t\t Load previous saved game successfully.\n";
+
+    } else {
+        cout << "File unfound.\n";
     }
 }
 

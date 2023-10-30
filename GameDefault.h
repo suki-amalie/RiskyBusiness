@@ -9,7 +9,6 @@
 
 
 #include <random>       // std::default_random_engine
-#include <chrono>       // std::chrono::system_clock
 
 #include "workHorse.h"
 #include "Player.h"
@@ -55,10 +54,9 @@ public:
     void setUpPlayers(int mode, int playersNumb);
 
     /********* GET FUNCTIONS ************************/
-    int getIndexFromPlayer(Player player);
     int getCompanyIndex(char companyKey);
     int getRandomNum(int min, int max);
-
+    char askToContinue(string question);
 
     /************* GAME FUNCTIONS ******************/
 
@@ -66,17 +64,17 @@ public:
     void resetGame();
     bool endGame(Player player, int day);
     virtual void checkMenuSelection(char userChoice, Player & player);
-    void takeARisk(Player & player);
-    virtual void acquireCompany(Player & player);
+    void takeARisk(Player &player);
+    virtual void acquireCompany(Player &player);
     char askForCompanyKey(string question);
-    void usePower(Player & player);
+    void usePower(Player &player);
     void moneyPower(Player &player, int amount);
     void sharePower(Player &player, int amount);
-    void moneyEffect(Player & player, int min, int max);
+    void moneyEffect(Player &player, int min, int max);
     void shareEffect(Player & player, int min, int max);
-    void buyShares(Player & player);
-    void sellShares(Player& player);
-    void quitPlayer(Player player);
+    void buyShares(Player &player);
+    void sellShares(Player &player);
+    void quitPlayer(Player &player);
 
     /*************** DISPLAY FUNCTIONS ************/
 
