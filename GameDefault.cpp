@@ -335,13 +335,16 @@ void GameDefault::moneyPower(Player &player, int amount) {
 }
 
 void GameDefault::sharePower(Player &player, int amount) {
+    int multiplier = rand() % gameMode + 2;
     string action = (amount > 0) ? "Added " : "Minus ";
     char companyKey = askForCompanyKey("Select which company to " + action + " shares");
     int companyIndex = getCompanyIndex(companyKey);
     Company* ptr = companies[companyIndex];
+    // making sure that we don't take away more shares than the company's available shares
+    amount = min(amount, ptr->getTotalShares());
     player.updateCompanyShares(ptr, amount);
     ptr->updateShares(-1*amount);
-    cout << action << amount << " " << ptr -> getCompanyName() + "'s shares to" + player.getPlayerName() + "'s portfolio\n";
+    cout << action << amount << " " << ptr -> getCompanyName() + "'s shares to " + player.getPlayerName() + "'s portfolio\n";
 }
 
 void GameDefault::takeARisk(Player &player) {

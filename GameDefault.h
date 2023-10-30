@@ -60,6 +60,7 @@ public:
     int getMinCompanies(int mode);
     int getRandomNum(int min, int max);
 
+
     /************* GAME FUNCTIONS ******************/
 
     void resetSharesPrice();

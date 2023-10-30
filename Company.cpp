@@ -44,7 +44,12 @@ char Company::getKey() {
 }
 
 void Company::updateShares(int change) {
-    shares += change;
+    int newshares = shares + change;
+    if ( newshares >= 0) {
+        shares = newshares;
+    } else {
+        shares = 0;
+    }
 }
 
 void Company::setSharePrice(int level) {
