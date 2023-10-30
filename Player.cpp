@@ -79,8 +79,6 @@ void Player::buyShares(Company* ptr, int amount) {
     updateCompanyShares(ptr, amount);
     updateTotalShares(amount);
     updateMoney(-1*amount*ptr->getSharePrice());
-    // decrease company's available shares
-    ptr->updateShares(-amount);
 }
 
 map<Company*, int> Player::getCompaniesDetails() {
@@ -90,8 +88,6 @@ map<Company*, int> Player::getCompaniesDetails() {
 void Player::sellShares(Company* ptr, int amount) {
     // decrease player's shares in company by sell amount
     companiesDetails[ptr] -= amount;
-    // increase company available shares by same amount
-    ptr ->updateShares(amount);
     // decrease player's total shares
     updateTotalShares(-1*amount);
     // increase player's money
