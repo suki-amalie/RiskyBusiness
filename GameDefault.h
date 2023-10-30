@@ -8,9 +8,10 @@
 #define A2_JASHNGUYEN_GAMEDEFAULT_H
 
 
-#include "main.h"
 #include <random>       // std::default_random_engine
 #include <chrono>       // std::chrono::system_clock
+
+#include "workHorse.h"
 #include "Player.h"
 #include "Company.h"
 #include "Bronze.h"
