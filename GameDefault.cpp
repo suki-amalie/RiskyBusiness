@@ -1,4 +1,8 @@
-
+/**************************************************
+ Project: Risky Business - Assigment 2 part B
+ Author: Jash Nguyen (34327681)
+ Purpose: GAME DEFAULT CLASS file
+**************************************************/
 
 #include <iostream>
 #include "GameDefault.h"
@@ -15,7 +19,12 @@ void GameDefault::playGame() {
                 displayMenu();
                 userChoice = askForLetter("What will you do now? ");
                 checkMenuSelection(userChoice, player);
-                won = endGame(player, dayCounter);
+                won = hasWon(player);
+                if (won) {;
+                    cout << divider << endl;
+                    cout << "\t\t\t Congratulation, " << player.getPlayerName() << ", you won!\n";
+                    cout << divider << endl;
+                }
                 waitForPlayer();
                 clearScreen();
             }
@@ -24,7 +33,8 @@ void GameDefault::playGame() {
         dayCounter ++;
         resetSharesPrice();
     } while (not won && dayCounter < maxDays);
-    cout << "\t\t\tEND GAME ~~~\n";
+    cout << divider << endl;
+    cout << "\t\t\t END GAME ~~~\n";
     cout << "\tThank you for testing this program :)\n";
     waitForPlayer();
     clearScreen();
@@ -185,6 +195,29 @@ char GameDefault::askToContinue(string question) {
     }
 }
 
+bool GameDefault::hasWon(Player player) {
+    return player.getTotalCompaniesOwned() >= minCompanies and player.getMoney() >= minMoney;
+}
+
+/*check if game is ended based on winning conditions */
+bool GameDefault::endGame(Player player, int day) {
+    bool end = false;
+    if (day >= maxDays) {
+        cout << divider << endl;
+        cout << "\t\t Game over!\n";
+        cout << divider << endl;
+        end = true;
+    } else {
+        if (hasWon(player)) {
+            cout << divider << endl;
+            cout << setw(40) << "Congratulations, " << player.getPlayerName() << "! You won :)\n";
+            cout << divider << endl;
+            end = true;
+        }
+    }
+    return end;
+}
+
 /******************** GAME FUNCTIONS *********************/
 
 void GameDefault::resetSharesPrice() {
@@ -203,23 +236,6 @@ void  GameDefault::resetGame() {
     }
 
     players.clear();
-}
-
-/*check if game is ended based on winning conditions */
-bool GameDefault::endGame(Player player, int day) {
-    bool end = false;
-    if (day >= maxDays) {
-        cout << "Maximum days reached! Game over!\n";
-        end = true;
-    } else {
-        if (player.getTotalCompaniesOwned() >= minCompanies and player.getMoney() >= minMoney) {
-            cout << divider << endl;
-            cout << setw(40) << "Congratulations, " << player.getPlayerName() << "! You won :)\n";
-            cout << divider << endl;
-            end = true;
-        }
-    }
-    return end;
 }
 
 

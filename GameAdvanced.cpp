@@ -1,6 +1,8 @@
-//
-// Created by ADMIN on 27-Oct-23.
-//
+/**************************************************
+ Project: Risky Business - Assigment 2 part B
+ Author: Jash Nguyen (34327681)
+ Purpose: GAME ADVANCED CLASS file
+**************************************************/
 
 #include "GameAdvanced.h"
 

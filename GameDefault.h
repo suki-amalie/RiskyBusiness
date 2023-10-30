@@ -57,12 +57,14 @@ public:
     int getCompanyIndex(char companyKey);
     int getRandomNum(int min, int max);
     char askToContinue(string question);
+    bool hasWon(Player player);
+    bool endGame(Player player, int day);
+
 
     /************* GAME FUNCTIONS ******************/
 
     void resetSharesPrice();
     void resetGame();
-    bool endGame(Player player, int day);
     virtual void checkMenuSelection(char userChoice, Player & player);
     void takeARisk(Player &player);
     virtual void acquireCompany(Player &player);

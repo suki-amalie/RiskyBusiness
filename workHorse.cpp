@@ -1,3 +1,8 @@
+/**************************************************
+ Project: Risky Business - Assigment 2 part B
+ Author: Jash Nguyen (34327681)
+ Purpose: WORKHORSE file
+**************************************************/
 
 #include "workHorse.h"
 
