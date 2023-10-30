@@ -53,7 +53,7 @@ void Company::updateShares(int change) {
 }
 
 void Company::setSharePrice(int level) {
-    sharePrice = rand()%4 + 1;
+    sharePrice = rand()%(level+4) + 1;
 }
 
 

@@ -209,7 +209,9 @@ bool GameDefault::endGame(Player player, int day) {
             end = true;
         }
         if (player.getTotalCompaniesOwned() >= minCompanies and player.getMoney() >= minMoney) {
-            cout << "~~~ Congratulations, " << player.getPlayerName() << "! You won :)\n";
+            cout << divider << endl;
+            cout << setw(40) << "Congratulations, " << player.getPlayerName() << "! You won :)\n";
+            cout << divider << endl;
             end = true;
         }
     }
@@ -278,6 +280,7 @@ void GameDefault::sellShares(Player& player) {
     if (maxShares > 0) {
         int numberOfShares = askForNumber("How many shares to sell: ", 1, maxShares);
         player.sellShares(companies[companyIndex], numberOfShares);
+        cout << "You earned $" << numberOfShares*(companies[companyIndex]->getSharePrice()) << " from selling shares!\n";
 
     } else {
         cout << "You dont have any shares to sell\n";
@@ -373,12 +376,14 @@ void GameDefault::sharePower(Player &player, int amount) {
 }
 
 void GameDefault::takeARisk(Player &player) {
+    unsigned seed = chrono::system_clock::now().time_since_epoch().count();
+    shuffle(risks.begin(), risks.end(), default_random_engine(seed));
     Risk chosenRisk = risks[rand()%risks.size()];
     string effect = chosenRisk.getEffect();
     string name = chosenRisk.getName();
     int max = chosenRisk.getMax();
     int min = chosenRisk.getMin();
-    cout << chosenRisk.getDetails();
+    //cout << chosenRisk.getDetails();
     if (effect == "money") {
         // check if riskEffect name starts with global
         if (name.rfind("Global", 0) == 0) {
@@ -470,7 +475,7 @@ void GameDefault::displayMarket() {
 }
 
 void GameDefault::displayMenu() {
-    cout << setw(15) << "[B]uy" << setw(10) << "[S]ell" << setw(10) << "[P]ower" << setw(10) << "[R]isk" << setw(10) << "[Q]uit" << setw(10) << "[A]quire" << endl;
+    cout << setw(30) << "[B]uy" << setw(10) << "[S]ell" << setw(10) << "[P]ower" << setw(10) << "[R]isk" << setw(10) << "[Q]uit" << setw(10) << "[A]quire" << endl;
     cout << divider << endl;
 
 }
