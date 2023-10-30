@@ -14,17 +14,20 @@ int main() {
     GameAdvanced gameAdvanced;
     srand(unsigned (time(nullptr)));
 
-    //display intro to game
+    // default intro
     //displayTextFile("RBintro.txt");
+
+    // advanced intro
+    displayTextFile("RBintroAdvanced.txt");
 
     int gameMode = askForNumber("Enter game difficulty level: ", 4, 6);
     int numberOfPlayers = askForNumber("Enter number of players", 1, 3);
 
     // Default game play
-    //bPtr = new GameDefault(gameMode, numberOfPlayers, 1);
+    //bPtr = new GameDefault(gameMode, numberOfPlayers);
 
     // Advanced game play
-    bPtr = new GameAdvanced(gameMode, numberOfPlayers, 1);
+    bPtr = new GameAdvanced(gameMode, numberOfPlayers);
 
     bPtr->playGame();
 
@@ -50,12 +53,6 @@ void clearScreen() {
     //system("clear");
 }
 
-void displayTitle() {
-    cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
-    cout << "\t\tRisky Business :: Share Market Simulation\n";
-    cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
-
-}
 
 void displayTextFile(string myFile) {
     // local vars
@@ -69,8 +66,8 @@ void displayTextFile(string myFile) {
         }
     }
     blurbData.close();
-
     waitForPlayer();
+    clearScreen();
 }
 
 /****************** INPUT FUNCTIONS **********************/

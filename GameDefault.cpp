@@ -3,11 +3,9 @@
 #include <iostream>
 #include "GameDefault.h"
 
-/********** MAIN FUNCTION ******/
+/********************** MAIN FUNCTION ********************/
 
 void GameDefault::playGame() {
-
-    bool won = false;
     bool end = false;
     char userChoice = ' ';
     do {
@@ -16,14 +14,7 @@ void GameDefault::playGame() {
             displayMenu();
             userChoice = askForLetter("What will you do now? ");
             checkMenuSelection(userChoice, player);
-
-            if (player.getTotalCompaniesOwned() >= minCompanies && player.getMoney() >= minMoney) {
-                won = true;
-                cout << "Congratulations, " << player.getPlayerName() << "! You won :)\n";
-            }
-            if (dayCounter >= maxDays || won || players.empty()) {
-                end = true;
-            }
+            end = endGame(player, dayCounter);
             waitForPlayer();
             clearScreen();
         }
@@ -31,17 +22,14 @@ void GameDefault::playGame() {
         dayCounter ++;
         resetSharesPrice();
     } while (not end);
-
-    if (not won) {
-        cout << "\t\t\tEND GAME ~~~\n";
-    }
+    cout << "\t\t\tEND GAME ~~~\n";
     cout << "\tThank you for testing this program :)\n";
     waitForPlayer();
     clearScreen();
 
 }
 
-/*************** CONSTRUCTORS ***************/
+/*********************** CONSTRUCTORS *********************/
 GameDefault::GameDefault() {
     dayCounter = 1;
     gameMode = 4;
@@ -51,22 +39,20 @@ GameDefault::GameDefault() {
     maxDays = 1;
 }
 
-GameDefault::GameDefault(int newGameMode, int playerNum, int currentDay) {
-
+GameDefault::GameDefault(int newGameMode, int playerNum) {
     setGameMode(newGameMode);
     setPlayersNumber(playerNum);
-    setDay(currentDay);
+    dayCounter = 1;
 
-    minCompanies = getMinCompanies(gameMode);
-    minMoney = getMinMoney(gameMode);
-    maxDays = getMaxDays(gameMode);
+    minCompanies = newGameMode - 1;
+    minMoney = (gameMode+1)*100;
+    maxDays = gameMode*10;
+    int maxCompanies = gameMode*3;
 
-    int maxCompanies = getMaxCompanies(gameMode);
     setUpCompanies(maxCompanies, "companies.txt");\
     setUpShares();
     setUpPlayers(gameMode, playersNumber);
     setUpRisks("riskDefault.txt");
-
 }
 
 GameDefault::~GameDefault() {
@@ -77,18 +63,18 @@ GameDefault::~GameDefault() {
     }
 }
 
-/************** SETTER FUNCTIONS ***********************/
+/*********************** SETTER FUNCTIONS ***********************/
 
 void GameDefault::setGameMode(int val) {
-    gameMode = val;
+    gameMode = (4 <= val <= 6) ? val : 4;
 }
 
 void GameDefault::setDay(int val) {
-    dayCounter = val;
+    dayCounter = (val > 0) ? val : 1;
 }
 
 void GameDefault::setPlayersNumber(int val) {
-    playersNumber = val;
+    playersNumber = (1 <= val <= 4)? val : 1;
 }
 
 void GameDefault::setUpPlayers(int mode, int playersNumb) {
@@ -166,6 +152,32 @@ void GameDefault::setUpRisks(string fileName) {
     fileToRead.close();
 }
 
+/***************** GET FUNCTIONS ****************************/
+
+int GameDefault::getRandomNum(int min, int max) {
+    return rand()%(max - min + 1) + min;
+}
+
+int GameDefault::getCompanyIndex(char companyKey) {
+    for (int i=0; i < companies.size(); i++) {
+        Company* ptr = companies[i];
+        if (ptr -> getKey() == companyKey) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+int GameDefault::getIndexFromPlayer(Player player) {
+    for (int i=0; i<players.size(); i++) {
+        if (players[i].getPlayerName() == player.getPlayerName()) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+
 /******************** GAME FUNCTIONS *********************/
 
 void GameDefault::resetSharesPrice() {
@@ -183,9 +195,27 @@ void  GameDefault::resetGame() {
         company = nullptr;
     }
 
-
     players.clear();
 }
+
+/*check if game is ended based on winning conditions */
+bool GameDefault::endGame(Player player, int day) {
+    bool end = false;
+    if (day >= maxDays) {
+        cout << "Maximum days reached! Game over!\n";
+        end = true;
+    } else {
+        if (players.empty()) {
+            end = true;
+        }
+        if (player.getTotalCompaniesOwned() >= minCompanies and player.getMoney() >= minMoney) {
+            cout << "~~~ Congratulations, " << player.getPlayerName() << "! You won :)\n";
+            end = true;
+        }
+    }
+    return end;
+}
+
 
 void GameDefault::checkMenuSelection(char userChoice, Player& player) {
     switch (userChoice) {
@@ -234,9 +264,6 @@ void GameDefault::buyShares(Player & player) {
         if (maxShares > 0) {
             int numberOfShares = askForNumber("How many shares to buy: ", 1, maxShares);
             player.buyShares(ptr, numberOfShares);
-            // decrease company shares
-            ptr->updateShares(-numberOfShares);
-
         } else {
             cout << "You dont have enough money to buy shares.\n";
         }
@@ -251,8 +278,6 @@ void GameDefault::sellShares(Player& player) {
     if (maxShares > 0) {
         int numberOfShares = askForNumber("How many shares to sell: ", 1, maxShares);
         player.sellShares(companies[companyIndex], numberOfShares);
-        // increase company's total available shares
-        companies[companyIndex]->updateShares(numberOfShares);
 
     } else {
         cout << "You dont have any shares to sell\n";
@@ -355,9 +380,9 @@ void GameDefault::takeARisk(Player &player) {
     int min = chosenRisk.getMin();
     cout << chosenRisk.getDetails();
     if (effect == "money") {
-        // check if effect name starts with global
+        // check if riskEffect name starts with global
         if (name.rfind("Global", 0) == 0) {
-            // if True then, implement this effect on every player
+            // if True then, implement this riskEffect on every player
             for (auto &globalPlayer: players) {
                 moneyEffect(globalPlayer, min, max);
             }
@@ -422,16 +447,23 @@ void GameDefault::quitPlayer(Player player) {
 }
 
 
-/********* DISPLAY FUNCTIONS *****************/
+/********************* DISPLAY FUNCTIONS *****************/
+
+void GameDefault::displayTitle() {
+    cout << divider << endl;
+    cout << "\t\t\t\tRisky Business :: Share Market Simulation\n";
+    cout << divider << endl;
+
+}
 
 /*display company's total shares, share price, cost and owner*/
 void GameDefault::displayMarket() {
     stringstream descriptions;
     descriptions << divider << endl;
-    descriptions << setw(35) << "Available" << setw(10) << "Current" << setw(10) << "Company"<< setw(12) << "Current" << "\n";
-    descriptions << setw(34) << "Shares" << setw(10) << "Value" << setw(10) << "Cost" << setw(12) << "Owner" << "\n";
+    descriptions << setw(50) << "Available" << setw(10) << "Current" << setw(10) << "Company"<< setw(12) << "Current" << "\n";
+    descriptions << setw(49) << "Shares" << setw(10) << "Value" << setw(10) << "Cost" << setw(12) << "Owner" << "\n";
     for (auto ptr:companies) {
-        descriptions << setw(25) << ptr->getCompanyName() << setw(7) << ptr->getTotalShares()<< setw(10)
+        descriptions << setw(40) << ptr->getCompanyName() << setw(7) << ptr->getTotalShares()<< setw(10)
                      << ptr->getSharePrice() << setw(11) << ptr->getCompanyCost() << setw(14) << ptr->getOwnerName() << endl;
     }
     cout << descriptions.str();
@@ -444,56 +476,94 @@ void GameDefault::displayMenu() {
 }
 
 void GameDefault::displayGameInterface(Player player) {
-    cout << divider << endl;
-    cout << "\t\tRisky Business :: Share Market Simulation\n";
-    cout << divider << endl;
-    cout << "\t#Companies to win: " << minCompanies << "\tMin Money: $" << minMoney << "\t\tDay: " << dayCounter << endl;
+    displayTitle();
+    cout << setw(40) << "#Companies to win: " << minCompanies << "\tMin Money: $" << minMoney << "\t\tDay: " << dayCounter << endl;
     displayMarket();
     cout << player.getPortfolio();
     cout << divider << endl;
 }
 
-/***************** GET FUNCTIONS ****************************/
+/**********************  TESTER FUNCTIONS *******************************/
 
-int GameDefault::getRandomNum(int min, int max) {
-    return rand()%(max - min + 1) + min;
-}
-
-int GameDefault::getMinCompanies(int mode) {
-    return mode - 1; //minimum number of companies player must own to win
-}
-
-int GameDefault::getMinMoney(int mode) {
-    return (mode+1)*100; //minimum amount of money player must own to win
-}
-
-int GameDefault::getMaxDays(int mode) {
-    return mode*10; //maximum days player can play to win the game
-}
-
-int GameDefault::getMaxCompanies(int mode) {
-    return mode*3; //maximum number of companies to read from file
-}
-
-int GameDefault::getCompanyIndex(char companyKey) {
-    for (int i=0; i < companies.size(); i++) {
-        Company* ptr = companies[i];
-        if (ptr -> getKey() == companyKey) {
-            return i;
-        }
+void GameDefault::displayCompanies() {
+    for (auto company:companies) {
+        cout << company->getDetails();
     }
-    return -1;
 }
 
-int GameDefault::getIndexFromPlayer(Player player) {
-    for (int i=0; i<players.size(); i++) {
-        if (players[i].getPlayerName() == player.getPlayerName()) {
-            return i;
-        }
+void GameDefault::displayRisks() {
+    for (auto risk:risks) {
+        cout << risk.getDetails();
     }
-    return -1;
 }
 
+/*testing different scenarios where game can end */
+void GameDefault::testEndGame() {
+    Player testPlayer("Alice", gameMode);
+
+    // case 1, player has played more than maximum number of days without winning
+    endGame(testPlayer, maxDays+1);
+
+    // case 2, player has minimum number of companies to win
+    testPlayer.setTotalCompaniesOwned(minCompanies);
+    endGame(testPlayer, maxDays);
+
+    //case 3, player has minimum amount of money to win
+    testPlayer.setMoney(minMoney);
+    testPlayer.setTotalCompaniesOwned(minCompanies-1);
+    endGame(testPlayer, maxDays);
+
+    /* case 4, player has minimum number of companies and money to win
+     * and day counter is equal to maximum days
+    */
+    testPlayer.setTotalCompaniesOwned(minCompanies);
+    testPlayer.setMoney(minMoney);
+    endGame(testPlayer, maxDays);
+
+    /* case 5, player has minimum number of companies and money to win
+    * and day counter is equal than maximum days + 1
+   */
+    endGame(testPlayer, maxDays+1);
+}
+
+void GameDefault::testPlayer() {
+    //testing default constructor for player
+    Player testPlayer;
+    int testMode = 4;
+    testPlayer = Player();
+    testPlayer.setPlayerName("Bob");
+    testPlayer.setGameMode(4);
+    testPlayer.setPowerUsage(10 - testMode);
+    testPlayer.setMoney(5 * 10 * testMode);
+    cout << testPlayer.getDetails();
+
+    //testing overloaded constructor for player
+    testPlayer = Player("Jash", testMode);
+    cout << testPlayer.getDetails();
+
+    //testing update methods
+    testPlayer.updateMoney(10);
+    testPlayer.updatePowerUsage(-1);
+    testPlayer.updateTotalCompaniesOwned(2);
+    testPlayer.updateTotalShares(20);
+    cout << testPlayer.getDetails();
+
+}
+
+void GameDefault::testRisk() {
+    Risk testRisk;
+    testRisk = Risk();
+    // Testing default constructor for Risk class
+    testRisk.setMinimum(10);
+    testRisk.setMaximum(50);
+    testRisk.setRiskEffect("money");
+    testRisk.setRiskName("won a lottery");
+    cout << testRisk.getDetails();
+
+    //testing overloaded constructor for risk
+    testRisk = Risk("enrolled to univeristy", "money", 10, -50);
+    cout << testRisk.getDetails();
+}
 
 
 

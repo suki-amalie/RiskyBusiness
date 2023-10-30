@@ -28,7 +28,7 @@ protected:
     int minCompanies;
     int minMoney;
     int maxDays;
-    string divider = string(70, '~');
+    string divider = string(100, '~');
     string noOwner = "-------";
 public:
 
@@ -37,7 +37,7 @@ public:
 
     /********** CONSTRUCTORS ************/
     GameDefault();
-    GameDefault(int newGameMode, int playerNum, int currentDay);
+    GameDefault(int newGameMode, int playerNum);
 
     /************** DESTRUCTOR ************/
     ~GameDefault();
@@ -54,10 +54,6 @@ public:
     /********* GET FUNCTIONS ************************/
     int getIndexFromPlayer(Player player);
     int getCompanyIndex(char companyKey);
-    int getMinMoney(int mode);
-    int getMaxDays(int mode);
-    int getMaxCompanies(int mode);
-    int getMinCompanies(int mode);
     int getRandomNum(int min, int max);
 
 
@@ -65,11 +61,11 @@ public:
 
     void resetSharesPrice();
     void resetGame();
+    bool endGame(Player player, int day);
     virtual void checkMenuSelection(char userChoice, Player & player);
     void takeARisk(Player & player);
     virtual void acquireCompany(Player & player);
     char askForCompanyKey(string question);
-    void mergeCompany(Player & player);
     void usePower(Player & player);
     void moneyPower(Player &player, int amount);
     void sharePower(Player &player, int amount);
@@ -81,9 +77,17 @@ public:
 
     /*************** DISPLAY FUNCTIONS ************/
 
+    void displayTitle();
     virtual void displayMenu();
     void displayMarket();
     void displayGameInterface(Player player);
+
+    /************ TESTER FUNCTIONS ************/
+    void displayCompanies();
+    void displayRisks();
+    void testEndGame();
+    void testPlayer();
+    void testRisk();
 
 };
 

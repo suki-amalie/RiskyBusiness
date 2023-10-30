@@ -13,7 +13,7 @@ using namespace std;
 class Risk {
 private:
     string riskName;
-    string effect;
+    string riskEffect;
     int maximum;
     int minimum;
 public:
@@ -21,12 +21,21 @@ public:
     Risk();
     Risk(string newName, string newEffect, int min, int max);
 
+    // destructor
+    ~Risk() = default;
+
     // accessor functions
     string getName();
     string getEffect();
     int getMax();
     int getMin();
     string getDetails();
+
+    //mutator methods
+    void setRiskName(string name);
+    void setRiskEffect(string effect);
+    void setMaximum(int max);
+    void setMinimum(int min);
 };
 
 

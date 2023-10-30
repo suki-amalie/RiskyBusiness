@@ -79,6 +79,8 @@ void Player::buyShares(Company* ptr, int amount) {
     updateCompanyShares(ptr, amount);
     updateTotalShares(amount);
     updateMoney(-1*amount*ptr->getSharePrice());
+    // decrease company shares
+    ptr->updateShares(-amount);
 }
 
 map<Company*, int> Player::getCompaniesDetails() {
@@ -88,6 +90,8 @@ map<Company*, int> Player::getCompaniesDetails() {
 void Player::sellShares(Company* ptr, int amount) {
     // decrease player's shares in company by sell amount
     companiesDetails[ptr] -= amount;
+    // increase company's total available shares
+    ptr->updateShares(amount);
     // decrease player's total shares
     updateTotalShares(-1*amount);
     // increase player's money
@@ -122,23 +126,23 @@ void Player::setPowerUsage(int number) {
 
 string Player::getPortfolio() {
     stringstream portfolio;
-    portfolio << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
-    portfolio << "\t\t" << getPlayerName() << "'s Share Portfolio and Assets\n";
-    portfolio << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
-    portfolio << setw(10) << "Total money: $" << money << setw(20) << "Companies Owned: "
+    portfolio << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+    portfolio << setw(35) << getPlayerName() << "'s Share Portfolio and Assets\n";
+    portfolio << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+    portfolio << setw(30) << "Total money: $" << money << setw(20) << "Companies Owned: "
     << totalCompaniesOwned << setw(20) << "Total Shares: " << totalShares <<
     setw(12) << "Power: " << getPowerUsageLeft() << "\n";
     if (getCompaniesDetails().size() > 0) {
-        portfolio << setw(23) << "Company Names" << setw(21) << "Shares" << setw(15) << "Power" << endl;
+        portfolio << setw(40) << "Company Names" << setw(21) << "Shares" << setw(15) << "Power" << endl;
         for (auto companyShare: getCompaniesDetails()) {
             Company* companyPtr = companyShare.first;
             int shares = companyShare.second;
             string power = (companyPtr->getOwnerName() == getPlayerName()) ? companyPtr->getPower() : "None";
-            portfolio << setw(31) << companyPtr->getCompanyName() << setw(11) << shares << setw(16) << power << "\n";
+            portfolio << setw(48) << companyPtr->getCompanyName() << setw(11) << shares << setw(16) << power << "\n";
         }
     } else
     {
-        portfolio << "\n\t\tYour share portfolio is empty, " << getPlayerName() << endl;
+        portfolio << setw(70) << "Your share portfolio is empty, " << getPlayerName() << endl;
     }
     return portfolio.str();
 }

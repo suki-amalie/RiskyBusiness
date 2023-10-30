@@ -14,19 +14,19 @@ class GameAdvanced: public GameDefault {
 public:
     /********** CONSTRUCTORS ******/
     GameAdvanced();
-    GameAdvanced(int newGameMode, int playerNum, int currentDay);
+    GameAdvanced(int newGameMode, int playerNum);
 
     /************* GAME FUNCTIONS ******************/
-    void checkMenuSelection(char userChoice, Player& player);
+    virtual void checkMenuSelection(char userChoice, Player& player);
     bool haveAnotherShareHolder(char companyKey, string playerName);
-    void acquireCompany(Player & player);
+    virtual void acquireCompany(Player & player);
     void mergeCompany(Player & player);
-    void displayMenu();
     bool fileExist(string fileName);
     void saveGame(string inputFile);
     void loadGame(string outputFile);
 
-
+    /*********** DISPLAY FUNCTIONS ***************/
+    void displayMenu();
 };
 
 

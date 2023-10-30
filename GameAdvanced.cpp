@@ -10,8 +10,7 @@ GameAdvanced::GameAdvanced():GameDefault() {
 
 }
 
-GameAdvanced::GameAdvanced(int newGameMode, int playerNum, int currentDay) : GameDefault(newGameMode, playerNum,
-                                                                                         currentDay) {
+GameAdvanced::GameAdvanced(int newGameMode, int playerNum) : GameDefault(newGameMode, playerNum) {
 
 }
 /************* GAME FUNCTIONS ******************/
@@ -77,7 +76,6 @@ void GameAdvanced::acquireCompany(Player &player) {
     int companyIndex = getCompanyIndex(companyKey);
     //check if company is already owned
     if (companies[companyIndex] -> getOwnerName() == noOwner) {
-        int playerShares = player.getCompanyShares(companyKey);
         if (companies[companyIndex]->getTotalShares() <= 0 && (not haveAnotherShareHolder(companyKey, player.getPlayerName()))) {
             companies[companyIndex]->setOwner(player.getPlayerName());
             player.updateTotalCompaniesOwned(1);
@@ -130,11 +128,6 @@ void GameAdvanced::mergeCompany(Player & player) {
     }
 }
 
-void GameAdvanced::displayMenu() {
-    cout << setw(15) << "[B]uy" << setw(10) << "[S]ell" << setw(10) << "[P]ower" << setw(10) << "[R]isk" << setw(10) << "[Q]uit" << setw(12) << "[A]quire" << setw(12) << "[M]erge" << setw(10) << "Sa[V]e" << setw(10) << "[L]oad" << endl;
-    cout << divider << endl;
-}
-
 bool GameAdvanced::fileExist(string fileName) {
     ifstream infile(fileName);
     return infile.good();
@@ -174,8 +167,8 @@ void GameAdvanced::loadGame(string outputFile) {
         ifstream fileToRead(outputFile);
         if (fileToRead.is_open()) {
             fileToRead >> mode >> day >> companiesNum >> playersNum;
-            gameMode = mode;
-            dayCounter = day;
+            setGameMode(mode);
+            setDay(day);
             for (int i = 0; i < companiesNum; i ++) {
                 string companyName, owner;
                 int level, shares, sharePrice, cost;
@@ -187,14 +180,15 @@ void GameAdvanced::loadGame(string outputFile) {
                     case 3: {
                         companies[i] = new Bronze(companyName, owner, shares, sharePrice, cost);
                         break;
-                    };
+                    }
                     case 4: {
                         companies[i] = new Silver(companyName, owner, shares, sharePrice, cost);
                         break;
-                    };
+                    }
                     case 5: {
                         companies[i] = new Gold(companyName, owner, shares, sharePrice, cost);
                         break;
+                        } default: {cout << "Invalid company level.\n";
                     }
                 }
             }
@@ -202,9 +196,9 @@ void GameAdvanced::loadGame(string outputFile) {
 
             for (int i = 0; i < playersNum; i ++) {
                 string playerName;
-                int money, shares, powerLeft, companiesOwned, companyDetails;
+                int money, companyShares, powerLeft, companiesOwned, companyDetails;
                 getline(fileToRead, playerName);
-                fileToRead >> money >> shares >> powerLeft >> companiesOwned >> companyDetails;
+                fileToRead >> money >> companyShares >> powerLeft >> companiesOwned >> companyDetails;
                 getline(fileToRead, line);
                 Player player(playerName, mode);
 
@@ -222,5 +216,13 @@ void GameAdvanced::loadGame(string outputFile) {
 
     }
 }
+
+/*********** DISPLAY FUNCTIONS ***************/
+
+void GameAdvanced::displayMenu() {
+    cout << setw(15) << "[B]uy" << setw(10) << "[S]ell" << setw(10) << "[P]ower" << setw(10) << "[R]isk" << setw(10) << "[Q]uit" << setw(12) << "[A]quire" << setw(12) << "[M]erge" << setw(10) << "Sa[V]e" << setw(10) << "[L]oad" << endl;
+    cout << divider << endl;
+}
+
 
 
