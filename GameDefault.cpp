@@ -234,8 +234,6 @@ void GameDefault::buyShares(Player & player) {
         if (maxShares > 0) {
             int numberOfShares = askForNumber("How many shares to buy: ", 1, maxShares);
             player.buyShares(ptr, numberOfShares);
-            // decrease company shares
-            ptr->updateShares(-numberOfShares);
 
         } else {
             cout << "You dont have enough money to buy shares.\n";
@@ -251,8 +249,6 @@ void GameDefault::sellShares(Player& player) {
     if (maxShares > 0) {
         int numberOfShares = askForNumber("How many shares to sell: ", 1, maxShares);
         player.sellShares(companies[companyIndex], numberOfShares);
-        // increase company's total available shares
-        companies[companyIndex]->updateShares(numberOfShares);
 
     } else {
         cout << "You dont have any shares to sell\n";
@@ -300,20 +296,19 @@ void GameDefault::usePower(Player & player) {
         int companyIndex = getCompanyIndex(companyKey);
         Company* ptr = companies[companyIndex];
         if (ptr->getOwnerName() == player.getPlayerName()) {
-            int multiplier = rand() % gameMode + 2;
             int level = ptr -> getLevel();
             switch (level) {
                 case 3: {
-                    moneyPower(player, gameMode*multiplier*10);
+                    moneyPower(player);
                     break;
                 }
                 case 4: {
-                    sharePower(player, gameMode*multiplier);
+                    sharePower(player);
                     break;
                 }
                 case 5: {
-                    sharePower(player, gameMode*multiplier);
-                    moneyPower(player, gameMode*multiplier*10);
+                    sharePower(player);
+                    moneyPower(player);
                     break;
                 }
                 default: {cout << "Invalid company level.\n";}
@@ -327,21 +322,36 @@ void GameDefault::usePower(Player & player) {
     }
 }
 
-void GameDefault::moneyPower(Player &player, int amount) {
+void GameDefault::moneyPower(Player &player) {
+    int multiplier = rand() % gameMode + 2;
+    int amount = gameMode*multiplier*10;
     player.updateMoney(amount);
     string action = (amount > 0)? "Added" : "Minus";
     cout << action << " $" << amount << " to " << player.getPlayerName()
          << "'s account\n";
 }
 
-void GameDefault::sharePower(Player &player, int amount) {
-    string action = (amount > 0) ? "Added " : "Minus ";
-    char companyKey = askForCompanyKey("Select which company to " + action + " shares");
-    int companyIndex = getCompanyIndex(companyKey);
-    Company* ptr = companies[companyIndex];
-    player.updateCompanyShares(ptr, amount);
-    ptr->updateShares(-1*amount);
-    cout << action << amount << " " << ptr -> getCompanyName() + "'s shares to" + player.getPlayerName() + "'s portfolio\n";
+void GameDefault::sharePower(Player &player) {
+    bool enoughShares = false;
+    for ()
+    while (not enoughShares) {
+        int multiplier = rand() % gameMode + 2;
+        int amount = multiplier*gameMode;
+        string action = (amount > 0) ? "add " : "minus ";
+        char companyKey = askForCompanyKey("Select which company to " + action + " shares");
+        int companyIndex = getCompanyIndex(companyKey);
+        Company* ptr = companies[companyIndex];
+        if (ptr->getTotalShares() >= abs(amount)) {
+            player.updateCompanyShares(ptr, amount);
+            ptr->updateShares(-1*amount);
+            cout << action << amount << " " << ptr -> getCompanyName() + "'s shares to" + player.getPlayerName() + "'s portfolio\n";
+            enoughShares = true;
+        } else {
+            cout << "This company doesnt have enough shares to " << action << "from. Please select another company.\n";
+        }
+    }
+
+
 }
 
 void GameDefault::takeARisk(Player &player) {
@@ -391,7 +401,6 @@ void GameDefault::moneyEffect(Player &player, int min, int max) {
 }
 
 void GameDefault::shareEffect(Player & player, int min, int max) {
-    stringstream question;
     int randomValue = getRandomNum(min, max);
     int signedChange = (max > 0) ? randomValue : -1*randomValue;
     sharePower(player, signedChange);
@@ -404,8 +413,6 @@ void GameDefault::quitPlayer(Player player) {
         if (ptr->getOwnerName() == player.getPlayerName()) {
             ptr->setOwner(noOwner);
         }
-        // Return back company's shares from player to company's available shares;
-        ptr->updateShares(companyShares);
     }
     // erase player from global players vector
     int pos = getIndexFromPlayer(player);
